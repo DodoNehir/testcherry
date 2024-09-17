@@ -21,15 +21,15 @@ public class CherryController {
     return "members/createMemberForm.html";
   }
 
-  @PostMapping("/members/new")
-  public String create(MemberForm form) {
-    Member member = new Member();
-    member.setName(form.getName());
-
-    cherryService.join(member);
-
-    return "redirect:/";
-
-  }
+//  @PostMapping("/members/new")
+//  public String create(MemberForm form) {
+//    Member member = new Member();
+//    member.setName(form.getName());
+//
+//    cherryService.join(member);
+//
+//    return "redirect:/";
+//
+//  }
 
 }
