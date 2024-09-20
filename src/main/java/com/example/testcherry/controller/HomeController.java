@@ -2,7 +2,9 @@ package com.example.testcherry.controller;
 
 import com.example.testcherry.domain.Member;
 import com.example.testcherry.service.MemberService;
+import java.util.List;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -36,10 +38,14 @@ public class HomeController {
     return "redirect:/";
   }
 
-  // 모르겠음! 강의 보자!
-//  @GetMapping("/members")
-//  public String members() {
-//
-//  }
+  @GetMapping("/members")
+  public String list(Model model) {
+    List<Member> members = memberService.findAll();
+
+    // member list 자체를 Model 에 담는다.
+    model.addAttribute("members", members);
+
+    return "/members/memberList";
+  }
 
 }
