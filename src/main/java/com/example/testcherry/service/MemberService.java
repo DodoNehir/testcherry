@@ -1,26 +1,27 @@
 package com.example.testcherry.service;
 
 import com.example.testcherry.domain.Member;
-import com.example.testcherry.repository.SpringDataJpaMemberRepository;
+import com.example.testcherry.repository.MemberRepository;
+import java.sql.SQLException;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
 
-  private final SpringDataJpaMemberRepository springDataJpaMemberRepository;
+  private final MemberRepository memberRepository;
 
-  public MemberService(SpringDataJpaMemberRepository springDataJpaMemberRepository) {
-    this.springDataJpaMemberRepository = springDataJpaMemberRepository;
+  public MemberService(MemberRepository memberRepository) {
+    this.memberRepository = memberRepository;
   }
 
-  public Long join(Member member) {
-    return springDataJpaMemberRepository.save(member).getId();
+  public Long join(Member member) throws SQLException {
+    return memberRepository.save(member).getId();
 
   }
 
   public List<Member> findAll() {
-    return springDataJpaMemberRepository.findAll();
+    return memberRepository.findAll();
   }
 
 }

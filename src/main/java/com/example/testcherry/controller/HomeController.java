@@ -2,6 +2,7 @@ package com.example.testcherry.controller;
 
 import com.example.testcherry.domain.Member;
 import com.example.testcherry.service.MemberService;
+import java.sql.SQLException;
 import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,9 +30,10 @@ public class HomeController {
   }
 
   @PostMapping("/members/new")
-  public String create(@RequestParam("name") String name) {
+  public String create(@RequestParam("name") String name) throws SQLException {
     Member member = new Member();
     member.setName(name);
+    member.setId(1L);
 
     memberService.join(member);
 
