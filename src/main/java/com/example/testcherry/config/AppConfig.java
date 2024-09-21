@@ -1,6 +1,6 @@
 package com.example.testcherry.config;
 
-import com.example.testcherry.repository.JdbcMemberRepository;
+import com.example.testcherry.repository.JdbcTemplateMemberRepository;
 import com.example.testcherry.repository.MemberRepository;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +17,8 @@ public class AppConfig {
 
   @Bean
   public MemberRepository memberRepository() {
-    return new JdbcMemberRepository(dataSource);
+//    return new JdbcMemberRepository(dataSource);
+    return new JdbcTemplateMemberRepository(dataSource);
   }
 
 }
