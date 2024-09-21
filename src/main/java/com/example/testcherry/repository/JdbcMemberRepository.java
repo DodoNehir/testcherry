@@ -10,9 +10,7 @@ import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
 import org.springframework.jdbc.datasource.DataSourceUtils;
-import org.springframework.stereotype.Repository;
 
-@Repository
 public class JdbcMemberRepository implements MemberRepository {
 
   // dataSource로부터 connection 을 가져온다. dataSource는 스프링이 주입해준다.
