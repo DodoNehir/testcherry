@@ -21,4 +21,20 @@ public class AppConfig {
     return new JdbcTemplateMemberRepository(dataSource);
   }
 
+//  @Bean
+//  public TransactionTemplate writeTransactionOperations(
+//      PlatformTransactionManager transactionManager) {
+//    TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+//    transactionTemplate.setReadOnly(false);
+//    return transactionTemplate;
+//  }
+//
+//  @Bean
+//  public TransactionTemplate readTransactionOperations(
+//      PlatformTransactionManager transactionManager) {
+//    TransactionTemplate transactionTemplate = new TransactionTemplate(transactionManager);
+//    transactionTemplate.setReadOnly(true);
+//    return transactionTemplate;
+//  }
+
 }
