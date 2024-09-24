@@ -11,7 +11,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 @Setter
 @Getter
-@Table
+@Table(name = "members")
 public class Member {
   @Id
   private Long id;

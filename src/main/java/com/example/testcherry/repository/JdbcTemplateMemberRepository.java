@@ -24,7 +24,7 @@ public class JdbcTemplateMemberRepository implements MemberRepository {
 //    String sql = "insert into member(name) values (?)";
 //    jdbcTemplate.update(sql, member.getName());
     SimpleJdbcInsert insert = new SimpleJdbcInsert(this.jdbcTemplate);
-    insert.withTableName("member").usingGeneratedKeyColumns("id");
+    insert.withTableName("members").usingGeneratedKeyColumns("id");
 
     Map<String, Object> params = new HashMap<>();
     params.put("name", member.getName());
@@ -36,7 +36,7 @@ public class JdbcTemplateMemberRepository implements MemberRepository {
 
   @Override
   public Optional<Member> findById(Long id) {
-    String sql = "select * from member where id = ?";
+    String sql = "select * from members where id = ?";
     List<Member> members = jdbcTemplate.query(sql, memberRowMapper, id);
 
     return Optional.ofNullable(members.get(0));
@@ -44,7 +44,7 @@ public class JdbcTemplateMemberRepository implements MemberRepository {
 
   @Override
   public Optional<Member> findByName(String name) {
-    String sql = "select * from member where name = ?";
+    String sql = "select * from members where name = ?";
     List<Member> members = jdbcTemplate.query(sql, memberRowMapper, name);
 
     return Optional.ofNullable(members.get(0));
@@ -52,7 +52,7 @@ public class JdbcTemplateMemberRepository implements MemberRepository {
 
   @Override
   public List<Member> findAll() {
-    String sql = "select * from member";
+    String sql = "select * from members";
     return jdbcTemplate.query(sql, memberRowMapper);
   }
 
