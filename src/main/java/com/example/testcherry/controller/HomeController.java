@@ -21,7 +21,7 @@ public class HomeController {
 
   @GetMapping("/")
   public String home() {
-    return "index";
+    return "home";
   }
 
   @GetMapping("/members/new")
@@ -30,7 +30,9 @@ public class HomeController {
   }
 
   @PostMapping("/members/new")
-  public String create(@RequestParam("name") String name) throws SQLException {
+  public String signUp(
+      @RequestParam String name
+  ) throws SQLException {
     Member member = new Member();
     member.setName(name);
     member.setId(1L);
