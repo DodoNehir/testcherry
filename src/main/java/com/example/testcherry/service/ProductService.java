@@ -3,6 +3,7 @@ package com.example.testcherry.service;
 import com.example.testcherry.domain.Product;
 import com.example.testcherry.dto.ProductDto;
 import com.example.testcherry.repository.ProductRepository;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,13 +21,15 @@ public class ProductService {
     return ProductDto.from(savedProduct);
   }
 
-  public Long checkNumber(Long productId) {
-    if (productRepository.findById(productId).isPresent()) {
-      return productRepository.findById(productId).get().getQuantity();
+  public Product checkStock(Long productId) {
+    if (productRepository.findById(productId).isEmpty()) {
+      throw new RuntimeException("Product with id " + productId + " does not exist");
     }
-    return null;
+    return productRepository.findById(productId).get();
   }
 
-//  public Long minusQuantity() {}
+  public void saveAll(List<Product> productList) {
+    productRepository.saveAll(productList);
+  }
 
 }

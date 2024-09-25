@@ -43,4 +43,18 @@ public class Product {
         productDto.quantity());
   }
 
+  public void adjustStockPlus(Long quantity) {
+    if (quantity < 0) {
+      throw new RuntimeException("음수를 추가할 수 없습니다.");
+    }
+    this.quantity += quantity;
+  }
+
+  public void adjustStockMinus(Long quantity) {
+    if (this.quantity < quantity) {
+      throw new RuntimeException("재고보다 많을 수 없습니다.");
+    }
+    this.quantity -= quantity;
+  }
+
 }
