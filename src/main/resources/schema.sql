@@ -1,3 +1,5 @@
+SET foreign_key_checks = 0; //table drop이 가능하도록 해준다.
+
 DROP TABLE IF EXISTS MEMBERS;
 CREATE TABLE MEMBERS
 (
