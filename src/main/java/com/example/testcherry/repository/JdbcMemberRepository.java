@@ -37,7 +37,7 @@ public class JdbcMemberRepository implements MemberRepository {
       rs = ps.getGeneratedKeys();
 
       if (rs.next()) {
-        member.setId(rs.getLong(1));
+        member.setMemberId(rs.getLong(1));
       } else {
         throw new SQLException("Failed to insert member");
       }
@@ -66,7 +66,7 @@ public class JdbcMemberRepository implements MemberRepository {
 
       if (rs.next()) {
         Member member = new Member();
-        member.setId(rs.getLong("id"));
+        member.setMemberId(rs.getLong("id"));
         member.setName(rs.getString("name"));
         return Optional.of(member);
       }
@@ -97,7 +97,7 @@ public class JdbcMemberRepository implements MemberRepository {
 
       if (rs.next()) {
         Member member = new Member();
-        member.setId(rs.getLong("id"));
+        member.setMemberId(rs.getLong("id"));
         member.setName(rs.getString("name"));
         return Optional.of(member);
       }
@@ -128,7 +128,7 @@ public class JdbcMemberRepository implements MemberRepository {
       List<Member> members = new ArrayList<>();
       while (rs.next()) {
         Member member = new Member();
-        member.setId(rs.getLong("id"));
+        member.setMemberId(rs.getLong("id"));
         member.setName(rs.getString("name"));
         members.add(member);
       }

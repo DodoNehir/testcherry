@@ -35,7 +35,7 @@ public class HomeController {
   ) throws SQLException {
     Member member = new Member();
     member.setName(name);
-    member.setId(1L);
+    member.setMemberId(1L);
 
     memberService.join(member);
 

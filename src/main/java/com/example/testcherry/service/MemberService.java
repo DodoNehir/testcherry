@@ -16,7 +16,7 @@ public class MemberService {
   }
 
   public Long join(Member member) throws SQLException {
-    return memberRepository.save(member).getId();
+    return memberRepository.save(member).getMemberId();
   }
 
   public List<Member> findAll() {
