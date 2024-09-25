@@ -1,16 +1,8 @@
 package com.example.testcherry.repository;
 
 import com.example.testcherry.domain.Member;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.repository.CrudRepository;
 
-public interface MemberRepository {
-  Member save(Member member) throws SQLException;
+public interface MemberRepository extends CrudRepository<Member, Long> {
 
-  Optional<Member> findById(Long id);
-
-  Optional<Member> findByName(String name);
-
-  List<Member> findAll();
 }

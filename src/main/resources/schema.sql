@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS members;
-CREATE TABLE members
+DROP TABLE IF EXISTS MEMBERS;
+CREATE TABLE MEMBERS
 (
     member_id    INT          NOT NULL AUTO_INCREMENT,
     name         VARCHAR(100) NOT NULL,
@@ -8,8 +8,8 @@ CREATE TABLE members
     PRIMARY KEY (member_id)
 );
 
-DROP TABLE IF EXISTS products;
-CREATE TABLE products
+DROP TABLE IF EXISTS PRODUCTS;
+CREATE TABLE PRODUCTS
 (
     product_id  INT          NOT NULL AUTO_INCREMENT,
     name        VARCHAR(100) NOT NULL,
@@ -18,8 +18,8 @@ CREATE TABLE products
     PRIMARY KEY (product_id)
 );
 
-DROP TABLE IF EXISTS orders;
-CREATE TABLE orders
+DROP TABLE IF EXISTS ORDERS;
+CREATE TABLE ORDERS
 (
     order_id   INT      NOT NULL AUTO_INCREMENT,
     member_id  INT      NOT NULL,
@@ -27,8 +27,8 @@ CREATE TABLE orders
     PRIMARY KEY (order_id)
 );
 
-DROP TABLE IF EXISTS order_items;
-CREATE TABLE order_items
+DROP TABLE IF EXISTS ORDER_ITEMS;
+CREATE TABLE ORDER_ITEMS
 (
     order_item_id  INT NOT NULL AUTO_INCREMENT,
     product_id     INT NOT NULL,

@@ -13,7 +13,8 @@ spring:
     console:
       enabled: true
 
-#  jpa:
+  jpa:
+    show-sql: true
 #    database: h2
 #    generate-ddl: false
 #    open-in-view: false

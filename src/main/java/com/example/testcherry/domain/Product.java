@@ -12,7 +12,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "products")
+@Table(name = "PRODUCTS")
 public class Product {
 
   @Id

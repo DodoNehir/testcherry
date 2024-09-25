@@ -9,7 +9,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "order_items")
+@Table(name = "ORDER_ITEMS")
 public class OrderItem {
 
   @Id

@@ -1,10 +1,10 @@
 package com.example.testcherry.service;
 
 import com.example.testcherry.domain.Member;
+import com.example.testcherry.dto.MemberDto;
 import com.example.testcherry.repository.MemberRepository;
-import java.sql.SQLException;
-import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
@@ -15,12 +15,11 @@ public class MemberService {
     this.memberRepository = memberRepository;
   }
 
-  public Long join(Member member) throws SQLException {
-    return memberRepository.save(member).getMemberId();
+  @Transactional
+  public MemberDto newMember(MemberDto memberDto) {
+    Member savedMember = memberRepository.save(Member.of(memberDto));
+    return MemberDto.from(savedMember);
   }
 
-  public List<Member> findAll() {
-    return memberRepository.findAll();
-  }
 
 }
