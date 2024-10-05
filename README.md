@@ -1,13 +1,52 @@
-# testcherry
+# 쇼핑몰 서비스
+* 상품 구매와 관련된 서비스를 제공합니다.
+* REST API로 구현하였고 콘솔로 확인이 가능합니다
 
-### 설명
+## 빌드 결과물
+* ...
 
-쇼핑몰
+## 환경 소개
+* IntelliJ IDEA 2024.1.2
+* JAVA 17
+* Spring Boot 3.3.3, Gradle
+* H2 in-memory
+* Junit5 기반 테스트 작성
+* (REST docs? / Swagger?)기반 API 명세 작성)
 
-* 상품들을 판매하는 서비스를 RESTfulAPI로 구현했습니다.
-* Java 기반으로 작성되었으며 콘솔로 확인이 가능합니다.
+## 프로젝트 구성 소개
 
-### 요구사항
+
+
+```
+.
+├── build.gradle.kts
+└── src
+    ├── main
+    │   ├── java
+    │   │   └── com
+    │   │       └── example
+    │   │           └── testcherry
+    │   │               ├── config
+    │   │               ├── controller
+    │   │               ├── domain
+    │   │               ├── dto
+    │   │               ├── repository
+    │   │               └── service
+    │   └── resources
+    │       ├── application.yaml
+    │       ├── data.sql
+    │       └── schema.sql
+    └── test
+
+
+```
+
+
+```mermaid
+graph LR
+A(입력)-->B[연산]
+B-->C(출력)
+```
 
 회원 (Member):
 * (이름, 주소, 전화번호)
