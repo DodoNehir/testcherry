@@ -3,14 +3,10 @@ package com.example.testcherry.domain;
 import com.example.testcherry.dto.MemberDto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Setter
 @Getter
-@NoArgsConstructor
 @Table(name = "MEMBERS")
 public class Member {
 
@@ -36,6 +32,18 @@ public class Member {
     return new Member(memberDto.name(),
         memberDto.address(),
         memberDto.phoneNumber());
+  }
+
+  public void updateName(String newName) {
+    this.name = newName;
+  }
+
+  public void updateAddress(String newAddress) {
+    this.address = newAddress;
+  }
+
+  public void updatePhoneNumber(String newPhoneNumber) {
+    this.phoneNumber = newPhoneNumber;
   }
 
 }

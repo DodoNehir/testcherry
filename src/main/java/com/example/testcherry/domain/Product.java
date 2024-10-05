@@ -4,14 +4,10 @@ import com.example.testcherry.dto.ProductDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Getter
-@Setter
-@NoArgsConstructor
 @Table(name = "PRODUCTS")
 public class Product {
 
@@ -41,6 +37,14 @@ public class Product {
     return new Product(productDto.name(),
         productDto.description(),
         productDto.quantity());
+  }
+
+  public void updateName(String newName) {
+    this.name = newName;
+  }
+
+  public void updateDescription(String newDescription) {
+    this.description = newDescription;
   }
 
   public void adjustStockPlus(Long quantity) {

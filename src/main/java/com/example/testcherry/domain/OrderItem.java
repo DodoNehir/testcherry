@@ -1,14 +1,10 @@
 package com.example.testcherry.domain;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Getter
-@Setter
-@NoArgsConstructor
 @Table(name = "ORDER_ITEMS")
 public class OrderItem {
 
@@ -24,6 +20,10 @@ public class OrderItem {
   public OrderItem(Long productId, Integer orderQuantity) {
     this.productId = productId;
     this.orderQuantity = orderQuantity;
+  }
+
+  public void updateQuantity(Integer quantity) {
+    this.orderQuantity += quantity;
   }
 
 }
