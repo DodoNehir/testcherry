@@ -1,6 +1,7 @@
 package com.example.testcherry.repository;
 
 import com.example.testcherry.domain.Member;
+import com.example.testcherry.dto.MemberDto;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,30 +25,14 @@ public class MemberRepository {
   }
 
   @Transactional
-  public Member updateName(Long id , String newName) {
+  public Member update(Long id, MemberDto memberDto) {
     Member member = getMemberById(id);
-    member.updateName(newName);
+    member.update(memberDto);
     memberJdbcRepository.save(member);
     return member;
   }
 
-  @Transactional
-  public Member updateAddress(Long id , String newAddress) {
-    Member member = getMemberById(id);
-    member.updateAddress(newAddress);
-    memberJdbcRepository.save(member);
-    return member;
-  }
-
-  @Transactional
-  public Member updatePhoneNumber(Long id , String newPhoneNumber) {
-    Member member = getMemberById(id);
-    member.updatePhoneNumber(newPhoneNumber);
-    memberJdbcRepository.save(member);
-    return member;
-  }
-
-  private Member getMemberById(Long id) {
+  public Member getMemberById(Long id) {
     Member member = memberJdbcRepository.findById(id).orElseThrow(() -> new RuntimeException("Member not found"));
     return member;
   }

@@ -15,10 +15,22 @@ public class MemberService {
     this.memberRepository = memberRepository;
   }
 
-  @Transactional
   public MemberDto newMember(MemberDto memberDto) {
     Member savedMember = memberRepository.save(Member.of(memberDto));
     return MemberDto.from(savedMember);
+  }
+
+  public MemberDto findMemberById(Long id) {
+    Member member = memberRepository.getMemberById(id);
+    return MemberDto.from(member);
+  }
+
+  public void updateMemberInfo(Long id, MemberDto memberDto) {
+    memberRepository.update(id, memberDto);
+  }
+
+  public void deleteMemberById(Long id) {
+    memberRepository.delete(id);
   }
 
 

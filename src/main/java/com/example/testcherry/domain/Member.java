@@ -41,16 +41,10 @@ public class Member {
     this.active = false;
   }
 
-  public void updateName(String newName) {
-    this.name = newName;
-  }
-
-  public void updateAddress(String newAddress) {
-    this.address = newAddress;
-  }
-
-  public void updatePhoneNumber(String newPhoneNumber) {
-    this.phoneNumber = newPhoneNumber;
+  public void update(MemberDto memberDto) {
+    this.name = memberDto.name();
+    this.address = memberDto.address();
+    this.phoneNumber = memberDto.phoneNumber();
   }
 
 }
