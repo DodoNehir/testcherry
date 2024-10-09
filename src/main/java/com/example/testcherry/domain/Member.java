@@ -22,16 +22,23 @@ public class Member {
   @NotBlank(message = "전화번호를 입력해주세요")
   private String phoneNumber;
 
+  private boolean active;
+
   public Member(String name, String address, String phoneNumber) {
     this.name = name;
     this.address = address;
     this.phoneNumber = phoneNumber;
+    this.active = true;
   }
 
   public static Member of(MemberDto memberDto) {
     return new Member(memberDto.name(),
         memberDto.address(),
         memberDto.phoneNumber());
+  }
+
+  public void delete() {
+    this.active = false;
   }
 
   public void updateName(String newName) {
