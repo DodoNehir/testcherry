@@ -42,9 +42,15 @@ public class Member {
   }
 
   public void update(MemberDto memberDto) {
-    this.name = memberDto.name();
-    this.address = memberDto.address();
-    this.phoneNumber = memberDto.phoneNumber();
+    if (!memberDto.name().isBlank()) {
+      this.name = memberDto.name();
+    }
+    if (!memberDto.address().isBlank()) {
+      this.address = memberDto.address();
+    }
+    if (!memberDto.phoneNumber().isBlank()) {
+      this.phoneNumber = memberDto.phoneNumber();
+    }
   }
 
 }
