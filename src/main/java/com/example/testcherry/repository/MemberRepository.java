@@ -21,7 +21,8 @@ public class MemberRepository {
 
   @Transactional
   public Member findByName(String name) {
-    return memberJdbcRepository.findByName(name).orElseThrow(() -> new RuntimeException("Member not found"));
+    return memberJdbcRepository.findByName(name)
+        .orElseThrow(() -> new RuntimeException("Member not found"));
   }
 
   @Transactional
@@ -33,7 +34,8 @@ public class MemberRepository {
   }
 
   public Member getMemberById(Long id) {
-    Member member = memberJdbcRepository.findById(id).orElseThrow(() -> new RuntimeException("Member not found"));
+    Member member = memberJdbcRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Member not found"));
     return member;
   }
 

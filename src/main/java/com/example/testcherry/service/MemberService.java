@@ -4,7 +4,6 @@ import com.example.testcherry.domain.Member;
 import com.example.testcherry.dto.MemberDto;
 import com.example.testcherry.repository.MemberRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class MemberService {
