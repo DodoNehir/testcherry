@@ -1,17 +1,25 @@
 package com.example.testcherry.domain;
 
 import com.example.testcherry.dto.ProductDto;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.Getter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Table;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "PRODUCTS")
+@Entity
 public class Product {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long productId;
 
   @NotBlank(message = "이름을 입력해주세요")

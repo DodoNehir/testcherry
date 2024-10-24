@@ -1,16 +1,22 @@
 package com.example.testcherry.domain;
 
 import com.example.testcherry.dto.MemberDto;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Table;
 
 @Getter
+@Entity
 @Table(name = "MEMBERS")
 public class Member {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long memberId;
 
   @NotBlank(message = "이름을 입력해주세요")
@@ -20,9 +26,14 @@ public class Member {
   private String address;
 
   @NotBlank(message = "전화번호를 입력해주세요")
+  @Column(length = 15)
   private String phoneNumber;
 
   private boolean active;
+
+  protected Member() {
+    this.active = true;
+  }
 
   public Member(String name, String address, String phoneNumber) {
     this.name = name;

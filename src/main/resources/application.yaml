@@ -1,22 +1,23 @@
 spring:
-  thymeleaf:
-    prefix: classpath:templates/
-    suffix: .html
 
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb;MODE=MySQL;
-    username: sa
-    password:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://dpg-cs4ld0l6l47c73fvn82g-a.oregon-postgres.render.com/mydb_o1aj
+    username: mydb_o1aj_user
+    password: h1uzCpcHAtAMHGlIx5sEuHJW3CR8nx4o
 
-  h2:
-    console:
-      enabled: true
+#  h2:
+#    console:
+#      enabled: true
 
   jpa:
     show-sql: true
-#    database: h2
-#    generate-ddl: false
-#    open-in-view: false
-#    hibernate:
-#      ddl-auto: create-drop
+    database: postgresql
+    generate-ddl: false
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+
+#  thymeleaf:
+#    prefix: classpath:templates/
+#    suffix: .html
