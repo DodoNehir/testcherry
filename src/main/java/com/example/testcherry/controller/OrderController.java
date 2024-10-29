@@ -5,9 +5,11 @@ import com.example.testcherry.dto.OrderDto;
 import com.example.testcherry.service.OrderService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/v1/orders")
 public class OrderController {
 
   private final OrderService orderService;
@@ -16,7 +18,7 @@ public class OrderController {
     this.orderService = orderService;
   }
 
-  @PostMapping("/api/v1/order")
+  @PostMapping
   public Response<Void> createOrder(@RequestBody OrderDto orderDto) {
     orderService.newOrder(orderDto);
     return Response.success(null);

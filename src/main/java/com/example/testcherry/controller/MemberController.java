@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/v1/members")
 public class MemberController {
 
   private final MemberService memberService;
@@ -20,26 +22,26 @@ public class MemberController {
     this.memberService = memberService;
   }
 
-  @PostMapping("/api/v1/members")
+  @PostMapping
   public Response<MemberDto> createNewMember(@RequestBody MemberDto memberDto) {
     MemberDto newMemberDto = memberService.newMember(memberDto);
     return Response.success(newMemberDto);
   }
 
-  @GetMapping("/api/v1/members/{id}")
+  @GetMapping("/{id}")
   public Response<MemberDto> getMemberById(@PathVariable("id") Long id) {
     MemberDto memberDto = memberService.findMemberById(id);
     return Response.success(memberDto);
   }
 
-  @PatchMapping("/api/v1/members/{id}")
+  @PatchMapping("/{id}")
   public Response<Void> updateMember(@PathVariable("id") Long id,
       @RequestBody MemberDto memberDto) {
     memberService.updateMemberInfo(id, memberDto);
     return Response.success(null);
   }
 
-  @PatchMapping("/api/v1/members/delete/{id}")
+  @PatchMapping("/delete/{id}")
   public Response<Void> deleteMember(@PathVariable("id") Long id) {
     memberService.deleteMemberById(id);
     return Response.success(null);
