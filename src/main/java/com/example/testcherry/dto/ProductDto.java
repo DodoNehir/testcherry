@@ -1,7 +1,9 @@
 package com.example.testcherry.dto;
 
 import com.example.testcherry.domain.Product;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record ProductDto(
     String name,
     String description,

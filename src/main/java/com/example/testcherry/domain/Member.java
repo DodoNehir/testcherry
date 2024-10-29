@@ -6,13 +6,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "UPDATE \"MEMBERS\" SET active = false WHERE memberId = ?")
 @SQLRestriction("active = true")
 @Entity
@@ -35,9 +39,7 @@ public class Member {
 
   private boolean active;
 
-  protected Member() {
-    this.active = true;
-  }
+
 
   public Member(String name, String address, String phoneNumber) {
     this.name = name;
@@ -50,6 +52,11 @@ public class Member {
     return new Member(memberDto.name(),
         memberDto.address(),
         memberDto.phoneNumber());
+  }
+
+  @PrePersist
+  public void prePersist() {
+    this.active = true;
   }
 
   public void delete() {
