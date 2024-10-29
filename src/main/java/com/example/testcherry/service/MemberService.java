@@ -20,7 +20,7 @@ public class MemberService {
   }
 
   public MemberDto findMemberById(Long id) {
-    Member member = memberRepository.getMemberById(id);
+    Member member = memberRepository.findById(id);
     return MemberDto.from(member);
   }
 

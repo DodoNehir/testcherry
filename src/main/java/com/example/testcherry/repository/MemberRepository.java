@@ -2,6 +2,7 @@ package com.example.testcherry.repository;
 
 import com.example.testcherry.domain.Member;
 import com.example.testcherry.dto.MemberDto;
+import com.example.testcherry.exception.MemberNotFoundException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,26 +23,26 @@ public class MemberRepository {
   @Transactional
   public Member findByName(String name) {
     return memberJdbcRepository.findByName(name)
-        .orElseThrow(() -> new RuntimeException("Member not found"));
+        .orElseThrow(() -> new MemberNotFoundException("Member with name " + name + " not found"));
   }
 
   @Transactional
   public Member update(Long id, MemberDto memberDto) {
-    Member member = getMemberById(id);
+    Member member = findById(id);
     member.update(memberDto);
     memberJdbcRepository.save(member);
     return member;
   }
 
-  public Member getMemberById(Long id) {
+  public Member findById(Long id) {
     Member member = memberJdbcRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Member not found"));
+        .orElseThrow(() -> new MemberNotFoundException("Member with id " + id + " not found"));
     return member;
   }
 
   @Transactional
   public void delete(Long id) {
-    Member member = getMemberById(id);
+    Member member = findById(id);
     member.delete();
     memberJdbcRepository.save(member);
 
