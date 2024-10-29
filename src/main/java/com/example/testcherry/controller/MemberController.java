@@ -3,7 +3,9 @@ package com.example.testcherry.controller;
 import com.example.testcherry.domain.Response;
 import com.example.testcherry.dto.MemberDto;
 import com.example.testcherry.service.MemberService;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.Mapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,7 +43,7 @@ public class MemberController {
     return Response.success(null);
   }
 
-  @PatchMapping("/delete/{id}")
+  @DeleteMapping("/{id}")
   public Response<Void> deleteMember(@PathVariable("id") Long id) {
     memberService.deleteMemberById(id);
     return Response.success(null);

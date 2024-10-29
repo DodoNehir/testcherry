@@ -12,6 +12,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(MemberNotFoundException.class)
   public Response handleMemberNotFoundException(MemberNotFoundException e) {
     return Response.fail(HttpStatus.NOT_FOUND, e.getMessage());
+//    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
   }
 
   @ExceptionHandler(RuntimeException.class)

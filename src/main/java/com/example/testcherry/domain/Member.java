@@ -9,8 +9,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Getter
+@SQLDelete(sql = "UPDATE \"MEMBERS\" SET active = false WHERE memberId = ?")
+@SQLRestriction("active = true")
 @Entity
 @Table(name = "MEMBERS")
 public class Member {
