@@ -21,6 +21,9 @@ public class AppConfig {
   @Autowired
   private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+  @Autowired
+  private JwtExceptionFilter jwtExceptionFilter;
+
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
@@ -43,6 +46,7 @@ public class AppConfig {
         // session은 생성되지 않도록
         .csrf(CsrfConfigurer::disable) // csrf는 disable
         .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(jwtExceptionFilter, jwtAuthenticationFilter.getClass())
         .httpBasic(Customizer.withDefaults()); // basic auth는 사용
 
     return http.build();
