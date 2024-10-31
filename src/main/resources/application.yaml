@@ -31,6 +31,6 @@ spring:
 logging:
   level:
     root: info
-    org.hibernate.type: debug
-    org.springframework.orm.jpa: debug
-    org.springframework.transaction: debug
+#    org.hibernate.type: debug
+#    org.springframework.orm.jpa: debug
+#    org.springframework.transaction: debug
