@@ -23,6 +23,14 @@ spring:
       name: user
       password: my-password
 
+
 #  thymeleaf:
 #    prefix: classpath:templates/
 #    suffix: .html
+
+logging:
+  level:
+    root: info
+    org.hibernate.type: debug
+    org.springframework.orm.jpa: debug
+    org.springframework.transaction: debug
