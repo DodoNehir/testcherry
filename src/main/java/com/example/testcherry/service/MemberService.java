@@ -24,6 +24,11 @@ public class MemberService {
     return MemberDto.from(member);
   }
 
+  public MemberDto loadMemberByUsername(String username) {
+    Member member = memberRepository.findByName(username);
+    return MemberDto.from(member);
+  }
+
   public void updateMemberInfo(Long id, MemberDto memberDto) {
     memberRepository.update(id, memberDto);
   }
