@@ -11,6 +11,7 @@ import java.io.IOException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -40,12 +41,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
       String accessToken = authHeader.substring(7);
       String username = jwtService.getUsername(accessToken);
-      MemberDto memberDto = memberService.loadMemberByUsername(username);
+      UserDetails member = memberService.loadMemberByUsername(username);
 
       // controller단에서 인증 정보를 사용할 수 있도록 SecurityContext에 인증 설정
       UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-          memberDto, null, null);
-      // authority 정보 ㅋㅋㅋㅋㅋㅋ.... Members를 UserDetails 상속하게 바꿔야 하나????
+          member, null, member.getAuthorities());
       authenticationToken.setDetails(new WebAuthenticationDetails(request));
       securityContext.setAuthentication(authenticationToken);
       SecurityContextHolder.setContext(securityContext);

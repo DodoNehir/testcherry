@@ -6,12 +6,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record MemberDto(
     String name,
+    String password,
     String address,
     String phoneNumber) {
 
   public static MemberDto from(Member member) {
     return new MemberDto(
-        member.getName(),
+        member.getUsername(),
+        member.getPassword(),
         member.getAddress(),
         member.getPhoneNumber()
     );
