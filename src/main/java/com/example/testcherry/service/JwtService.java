@@ -1,18 +1,22 @@
 package com.example.testcherry.service;
 
-import com.example.testcherry.dto.MemberDto;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import java.util.Date;
 import javax.crypto.SecretKey;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JwtService {
 
+  private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
   private static final SecretKey key = Jwts.SIG.HS256.key().build();
 
-  public String generateAccessToken(MemberDto memberDto) {
-    return generateToken(memberDto.name());
+  public String generateAccessToken(UserDetails userDetails) {
+    return generateToken(userDetails.getUsername());
   }
 
   public String getUsername(String accessToken) {
@@ -30,12 +34,17 @@ public class JwtService {
   }
 
   private String getSubject(String token) {
-    return Jwts.parser()
-        .verifyWith(key)
-        .build()
-        .parseSignedClaims(token)
-        .getPayload()
-        .getSubject();
+    try {
+      return Jwts.parser()
+          .verifyWith(key)
+          .build()
+          .parseSignedClaims(token)
+          .getPayload()
+          .getSubject();
+    } catch (JwtException e) {
+      logger.error(e.getMessage());
+      throw e;
+    }
 
   }
 

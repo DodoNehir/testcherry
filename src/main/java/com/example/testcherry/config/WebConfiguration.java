@@ -1,6 +1,5 @@
 package com.example.testcherry.config;
 
-import java.util.Arrays;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,13 +15,16 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
-public class AppConfig {
+public class WebConfiguration {
 
-  @Autowired
-  private JwtAuthenticationFilter jwtAuthenticationFilter;
+  private final JwtAuthenticationFilter jwtAuthenticationFilter;
+  private final JwtExceptionFilter jwtExceptionFilter;
 
-  @Autowired
-  private JwtExceptionFilter jwtExceptionFilter;
+  public WebConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter,
+      JwtExceptionFilter jwtExceptionFilter) {
+    this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    this.jwtExceptionFilter = jwtExceptionFilter;
+  }
 
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {

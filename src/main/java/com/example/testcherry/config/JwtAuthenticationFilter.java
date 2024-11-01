@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -46,7 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
       // controller단에서 인증 정보를 사용할 수 있도록 SecurityContext에 인증 설정
       UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
           member, null, member.getAuthorities());
-      authenticationToken.setDetails(new WebAuthenticationDetails(request));
+      authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
       securityContext.setAuthentication(authenticationToken);
       SecurityContextHolder.setContext(securityContext);
     }
