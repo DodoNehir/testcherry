@@ -1,9 +1,9 @@
 package com.example.testcherry.config;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
@@ -42,7 +42,11 @@ public class WebConfiguration {
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.cors(Customizer.withDefaults())
         .authorizeHttpRequests(
-            (requests) -> requests.anyRequest().authenticated()) // 모든 request에 대해
+            (requests) -> requests
+                .requestMatchers(HttpMethod.POST, "/api/*/members")
+                .permitAll()
+
+                .anyRequest().authenticated()) // 모든 request에 대해
         .sessionManagement(
             (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         // session은 생성되지 않도록

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record MemberDto(
-    String name,
+    String username,
     String password,
     String address,
     String phoneNumber) {

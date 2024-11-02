@@ -5,19 +5,31 @@ import com.example.testcherry.dto.MemberDto;
 import com.example.testcherry.exception.MemberNotFoundException;
 import com.example.testcherry.repository.MemberRepository;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
 
   private final MemberRepository memberRepository;
+  private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-  public MemberService(MemberRepository memberRepository) {
+  public MemberService(MemberRepository memberRepository,
+      BCryptPasswordEncoder bCryptPasswordEncoder) {
     this.memberRepository = memberRepository;
+    this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+  }
+
+  public boolean isPresentUsername(String username) {
+    return memberRepository.findByUsername(username).isPresent();
   }
 
   public MemberDto newMember(MemberDto memberDto) {
-    Member savedMember = memberRepository.save(Member.of(memberDto));
+    Member savedMember = memberRepository
+        .save(new Member(memberDto.username(),
+            bCryptPasswordEncoder.encode(memberDto.password()),
+            memberDto.address(),
+            memberDto.phoneNumber()));
     return MemberDto.from(savedMember);
   }
 

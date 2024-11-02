@@ -59,7 +59,7 @@ public class Member implements UserDetails {
   }
 
   public static Member of(MemberDto memberDto) {
-    return new Member(memberDto.name(),
+    return new Member(memberDto.username(),
         memberDto.password(),
         memberDto.address(),
         memberDto.phoneNumber());
@@ -75,8 +75,8 @@ public class Member implements UserDetails {
 //  }
 
   public void update(MemberDto memberDto) {
-    if (!memberDto.name().isBlank()) {
-      this.username = memberDto.name();
+    if (!memberDto.username().isBlank()) {
+      this.username = memberDto.username();
     }
     if (!memberDto.address().isBlank()) {
       this.address = memberDto.address();
