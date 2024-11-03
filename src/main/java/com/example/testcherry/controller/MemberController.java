@@ -3,6 +3,7 @@ package com.example.testcherry.controller;
 import com.example.testcherry.model.entity.Response;
 import com.example.testcherry.model.dto.MemberDto;
 import com.example.testcherry.model.member.LoginRequestBody;
+import com.example.testcherry.model.member.MemberAuthenticationResponse;
 import com.example.testcherry.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,9 +32,9 @@ public class MemberController {
   }
 
   @PostMapping("/authenticate")
-  public Response<Void> authenticate(@Valid @RequestBody LoginRequestBody loginRequestBody) {
-    memberService.authenticate(loginRequestBody);
-    return Response.success(null);
+  public Response<MemberAuthenticationResponse> authenticate(@Valid @RequestBody LoginRequestBody loginRequestBody) {
+    MemberAuthenticationResponse authenticationResponse = memberService.authenticate(loginRequestBody);
+    return Response.success(authenticationResponse);
   }
 
 //  @PostMapping

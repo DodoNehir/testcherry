@@ -7,7 +7,7 @@ public class MemberNotFoundException extends RuntimeException {
   }
 
   public MemberNotFoundException(String username) {
-    super("Member with name " + username + " not found");
+    super("Member with username " + username + " not found");
   }
 
   public MemberNotFoundException(Long id) {

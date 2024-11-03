@@ -1,9 +1,12 @@
 package com.example.testcherry.service;
 
-import com.example.testcherry.model.entity.Member;
-import com.example.testcherry.model.dto.MemberDto;
 import com.example.testcherry.exception.MemberNotFoundException;
+import com.example.testcherry.model.dto.MemberDto;
+import com.example.testcherry.model.entity.Member;
+import com.example.testcherry.model.member.LoginRequestBody;
+import com.example.testcherry.model.member.MemberAuthenticationResponse;
 import com.example.testcherry.repository.MemberRepository;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,11 +16,14 @@ public class MemberService {
 
   private final MemberRepository memberRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
+  private final JwtService jwtService;
 
   public MemberService(MemberRepository memberRepository,
-      BCryptPasswordEncoder bCryptPasswordEncoder) {
+      BCryptPasswordEncoder bCryptPasswordEncoder,
+      JwtService jwtService) {
     this.memberRepository = memberRepository;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    this.jwtService = jwtService;
   }
 
   public boolean isPresentUsername(String username) {
@@ -56,4 +62,21 @@ public class MemberService {
   }
 
 
+  public MemberAuthenticationResponse authenticate(LoginRequestBody loginRequestBody) {
+    String username = loginRequestBody.username();
+    String password = loginRequestBody.password();
+
+    // id
+    Member member = memberRepository.findByUsername(username)
+        .orElseThrow(() -> new MemberNotFoundException(username));
+
+    // password
+    if (!bCryptPasswordEncoder.matches(password, member.getPassword())) {
+      throw new MemberNotFoundException(username);
+    }
+
+    String toekn = jwtService.generateAccessToken(member);
+
+    return new MemberAuthenticationResponse(toekn);
+  }
 }

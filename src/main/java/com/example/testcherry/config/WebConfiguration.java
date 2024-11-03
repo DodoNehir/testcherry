@@ -43,7 +43,7 @@ public class WebConfiguration {
     http.cors(Customizer.withDefaults())
         .authorizeHttpRequests(
             (requests) -> requests
-                .requestMatchers(HttpMethod.POST, "/members")
+                .requestMatchers(HttpMethod.POST, "/members", "/members/authenticate")
                 .permitAll()
 
                 .anyRequest().authenticated()) // 모든 request에 대해
