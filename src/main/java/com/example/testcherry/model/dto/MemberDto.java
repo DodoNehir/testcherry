@@ -1,6 +1,6 @@
-package com.example.testcherry.dto;
+package com.example.testcherry.model.dto;
 
-import com.example.testcherry.domain.Member;
+import com.example.testcherry.model.entity.Member;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;

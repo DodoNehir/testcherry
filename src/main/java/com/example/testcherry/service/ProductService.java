@@ -1,7 +1,7 @@
 package com.example.testcherry.service;
 
-import com.example.testcherry.domain.Product;
-import com.example.testcherry.dto.ProductDto;
+import com.example.testcherry.model.entity.Product;
+import com.example.testcherry.model.dto.ProductDto;
 import com.example.testcherry.repository.ProductRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;

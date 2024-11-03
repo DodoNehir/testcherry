@@ -1,4 +1,4 @@
-package com.example.testcherry.domain;
+package com.example.testcherry.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;

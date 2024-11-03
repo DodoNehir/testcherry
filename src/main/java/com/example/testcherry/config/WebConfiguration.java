@@ -34,7 +34,7 @@ public class WebConfiguration {
     configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
     configuration.addAllowedHeader("*");
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-    source.registerCorsConfiguration("/api/v1/**", configuration);
+    source.registerCorsConfiguration("/**", configuration);
     return source;
   }
 
@@ -43,7 +43,7 @@ public class WebConfiguration {
     http.cors(Customizer.withDefaults())
         .authorizeHttpRequests(
             (requests) -> requests
-                .requestMatchers(HttpMethod.POST, "/api/*/members")
+                .requestMatchers(HttpMethod.POST, "/members")
                 .permitAll()
 
                 .anyRequest().authenticated()) // 모든 request에 대해

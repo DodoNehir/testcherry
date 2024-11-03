@@ -1,6 +1,6 @@
-package com.example.testcherry.dto;
+package com.example.testcherry.model.dto;
 
-import com.example.testcherry.domain.OrderItem;
+import com.example.testcherry.model.entity.OrderItem;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotNull;
 

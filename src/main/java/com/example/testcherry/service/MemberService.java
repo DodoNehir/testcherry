@@ -1,7 +1,7 @@
 package com.example.testcherry.service;
 
-import com.example.testcherry.domain.Member;
-import com.example.testcherry.dto.MemberDto;
+import com.example.testcherry.model.entity.Member;
+import com.example.testcherry.model.dto.MemberDto;
 import com.example.testcherry.exception.MemberNotFoundException;
 import com.example.testcherry.repository.MemberRepository;
 import org.springframework.security.core.userdetails.UserDetails;

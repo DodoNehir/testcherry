@@ -1,7 +1,7 @@
 package com.example.testcherry.controller;
 
-import com.example.testcherry.domain.Response;
-import com.example.testcherry.dto.OrderDto;
+import com.example.testcherry.model.dto.OrderDto;
+import com.example.testcherry.model.entity.Response;
 import com.example.testcherry.service.OrderService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/orders")
+@RequestMapping("/orders")
 public class OrderController {
 
   private final OrderService orderService;

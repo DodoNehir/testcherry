@@ -1,10 +1,8 @@
 package com.example.testcherry.controller;
 
-import com.example.testcherry.domain.Response;
+import com.example.testcherry.model.entity.Response;
 import com.example.testcherry.exception.MemberNotFoundException;
 import jakarta.validation.ConstraintViolationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;

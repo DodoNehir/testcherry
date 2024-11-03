@@ -1,7 +1,6 @@
-package com.example.testcherry.domain;
+package com.example.testcherry.model.entity;
 
-import com.example.testcherry.dto.MemberDto;
-import jakarta.persistence.Column;
+import com.example.testcherry.model.dto.MemberDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

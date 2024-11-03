@@ -1,13 +1,8 @@
 package com.example.testcherry.service;
 
-import com.example.testcherry.domain.Order;
-import com.example.testcherry.domain.Product;
-import com.example.testcherry.dto.OrderDto;
-import com.example.testcherry.dto.OrderItemDto;
+import com.example.testcherry.model.entity.Order;
+import com.example.testcherry.model.dto.OrderDto;
 import com.example.testcherry.repository.OrderRepository;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import org.springframework.stereotype.Service;
 
 @Service

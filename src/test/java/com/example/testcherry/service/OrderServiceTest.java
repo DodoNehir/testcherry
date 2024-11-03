@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
-import com.example.testcherry.domain.Product;
-import com.example.testcherry.dto.OrderDto;
+import com.example.testcherry.model.entity.Product;
+import com.example.testcherry.model.dto.OrderDto;
 import com.example.testcherry.repository.OrderRepository;
 import java.util.HashMap;
 import org.junit.jupiter.api.DisplayName;

@@ -1,6 +1,6 @@
-package com.example.testcherry.domain;
+package com.example.testcherry.model.entity;
 
-import com.example.testcherry.dto.OrderItemDto;
+import com.example.testcherry.model.dto.OrderItemDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;

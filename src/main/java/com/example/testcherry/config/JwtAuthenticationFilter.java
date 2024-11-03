@@ -1,6 +1,5 @@
 package com.example.testcherry.config;
 
-import com.example.testcherry.dto.MemberDto;
 import com.example.testcherry.service.JwtService;
 import com.example.testcherry.service.MemberService;
 import jakarta.servlet.FilterChain;
@@ -12,7 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;

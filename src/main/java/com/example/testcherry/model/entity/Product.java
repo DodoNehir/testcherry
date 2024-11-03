@@ -1,13 +1,12 @@
-package com.example.testcherry.domain;
+package com.example.testcherry.model.entity;
 
-import com.example.testcherry.dto.ProductDto;
+import com.example.testcherry.model.dto.ProductDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;

@@ -1,7 +1,7 @@
-package com.example.testcherry.domain;
+package com.example.testcherry.model.entity;
 
-import com.example.testcherry.dto.OrderDto;
-import com.example.testcherry.dto.OrderItemDto;
+import com.example.testcherry.model.dto.OrderDto;
+import com.example.testcherry.model.dto.OrderItemDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

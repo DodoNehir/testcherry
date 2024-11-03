@@ -1,7 +1,8 @@
 package com.example.testcherry.controller;
 
-import com.example.testcherry.domain.Response;
-import com.example.testcherry.dto.MemberDto;
+import com.example.testcherry.model.entity.Response;
+import com.example.testcherry.model.dto.MemberDto;
+import com.example.testcherry.model.member.LoginRequestBody;
 import com.example.testcherry.service.MemberService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/members")
+@RequestMapping("/members")
 public class MemberController {
 
   private final MemberService memberService;
@@ -24,10 +25,22 @@ public class MemberController {
   }
 
   @PostMapping
-  public Response<MemberDto> createNewMember(@Valid @RequestBody MemberDto memberDto) {
+  public Response<MemberDto> signUp(@Valid @RequestBody MemberDto memberDto) {
     MemberDto newMemberDto = memberService.newMember(memberDto);
     return Response.success(newMemberDto);
   }
+
+  @PostMapping("/authenticate")
+  public Response<Void> authenticate(@Valid @RequestBody LoginRequestBody loginRequestBody) {
+    memberService.authenticate(loginRequestBody);
+    return Response.success(null);
+  }
+
+//  @PostMapping
+//  public Response<MemberDto> signIn(@Valid @RequestBody MemberDto memberDto) {
+//    MemberDto newMemberDto = memberService.newMember(memberDto);
+//    return Response.success(newMemberDto);
+//  }
 
   @GetMapping("/{id}")
   public Response<MemberDto> getMemberById(@PathVariable("id") Long id) {
