@@ -3,6 +3,7 @@ package com.example.testcherry.controller;
 import com.example.testcherry.domain.Response;
 import com.example.testcherry.dto.MemberDto;
 import com.example.testcherry.service.MemberService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -23,7 +24,7 @@ public class MemberController {
   }
 
   @PostMapping
-  public Response<MemberDto> createNewMember(@RequestBody MemberDto memberDto) {
+  public Response<MemberDto> createNewMember(@Valid @RequestBody MemberDto memberDto) {
     MemberDto newMemberDto = memberService.newMember(memberDto);
     return Response.success(newMemberDto);
   }
