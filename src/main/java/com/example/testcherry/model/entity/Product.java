@@ -29,14 +29,14 @@ public class Product {
   private String description;
 
   @NotNull
-  private Long quantity;
+  private Integer quantity;
 
-  public Product(String name, Long quantity) {
+  public Product(String name, Integer quantity) {
     this.name = name;
     this.quantity = quantity;
   }
 
-  public Product(String name, String description, Long quantity) {
+  public Product(String name, String description, Integer quantity) {
     this.name = name;
     this.description = description;
     this.quantity = quantity;
@@ -56,14 +56,14 @@ public class Product {
     this.description = newDescription;
   }
 
-  public void adjustStockPlus(Long quantity) {
+  public void adjustStockPlus(Integer quantity) {
     if (quantity < 0) {
       throw new RuntimeException("음수를 추가할 수 없습니다.");
     }
     this.quantity += quantity;
   }
 
-  public void adjustStockMinus(Long quantity) {
+  public void adjustStockMinus(Integer quantity) {
     if (this.quantity < quantity) {
       throw new RuntimeException("재고보다 많을 수 없습니다.");
     }

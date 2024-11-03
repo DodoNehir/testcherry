@@ -1,8 +1,12 @@
 package com.example.testcherry.controller;
 
 import com.example.testcherry.model.dto.OrderDto;
+import com.example.testcherry.model.entity.Member;
 import com.example.testcherry.model.entity.Response;
+import com.example.testcherry.model.order.OrderRequestBody;
+import com.example.testcherry.model.order.OrderResponseBody;
 import com.example.testcherry.service.OrderService;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +23,12 @@ public class OrderController {
   }
 
   @PostMapping
-  public Response<Void> createOrder(@RequestBody OrderDto orderDto) {
-    orderService.newOrder(orderDto);
-    return Response.success(null);
+  public Response<OrderDto> createOrder(@RequestBody OrderRequestBody orderRequestBody,
+      Authentication authentication) {
+
+    OrderDto orderResponseBody = orderService.newOrder(orderRequestBody,
+        (Member) authentication.getPrincipal());
+    return Response.success(orderResponseBody);
   }
 
 }

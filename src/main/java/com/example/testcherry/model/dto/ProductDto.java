@@ -14,7 +14,7 @@ public record ProductDto(
     String description,
 
     @NotNull(message = "상품 재고를 입력해주세요")
-    Long quantity) {
+    Integer quantity) {
 
   public static ProductDto from(Product product) {
     return new ProductDto(

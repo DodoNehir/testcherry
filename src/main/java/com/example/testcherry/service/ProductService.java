@@ -1,7 +1,7 @@
 package com.example.testcherry.service;
 
-import com.example.testcherry.model.entity.Product;
 import com.example.testcherry.model.dto.ProductDto;
+import com.example.testcherry.model.entity.Product;
 import com.example.testcherry.repository.ProductRepository;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ public class ProductService {
     this.productRepository = productRepository;
   }
 
-  public ProductDto createProduct(ProductDto productDto) {
+  public ProductDto registerProduct(ProductDto productDto) {
     Product product = Product.of(productDto);
     Product savedProduct = productRepository.save(product);
     return ProductDto.from(savedProduct);
