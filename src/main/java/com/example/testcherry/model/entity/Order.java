@@ -14,13 +14,17 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "ORDERS",
@@ -37,11 +41,11 @@ public class Order {
 
   private LocalDateTime orderDate;
 
-  @OneToMany(cascade = CascadeType.ALL)
-  private Set<OrderItem> orderItems;
+  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+  private List<OrderItem> orderItems;
 
 
-  public Order(Member member, LocalDateTime orderDate, Set<OrderItem> orderItems) {
+  public Order(Member member, LocalDateTime orderDate, List<OrderItem> orderItems) {
     this.member = member;
     this.orderDate = orderDate;
     this.orderItems = orderItems;
@@ -49,7 +53,7 @@ public class Order {
 
   // dto 에서 entity 로 변환
   public static Order of(OrderDto orderDto) {
-    Set<OrderItem> orderItems = new HashSet<>();
+    List<OrderItem> orderItems = new ArrayList<>();
 
     for (OrderItemDto entry : orderDto.orderItemDtoSet()) {
       orderItems.add(OrderItem.of(entry));

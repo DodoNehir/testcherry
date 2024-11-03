@@ -1,6 +1,5 @@
 package com.example.testcherry.service;
 
-import com.example.testcherry.model.dto.MemberDto;
 import com.example.testcherry.model.dto.OrderDto;
 import com.example.testcherry.model.dto.OrderItemDto;
 import com.example.testcherry.model.dto.ProductDto;
@@ -9,14 +8,12 @@ import com.example.testcherry.model.entity.Order;
 import com.example.testcherry.model.entity.OrderItem;
 import com.example.testcherry.model.entity.Product;
 import com.example.testcherry.model.order.OrderRequestBody;
-import com.example.testcherry.model.order.OrderResponseBody;
 import com.example.testcherry.model.order_item.OrderItemRequestBody;
-import com.example.testcherry.model.order_item.OrderItemResponseBody;
 import com.example.testcherry.repository.OrderItemRepository;
 import com.example.testcherry.repository.OrderRepository;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,7 +36,7 @@ public class OrderService {
   //  public OrderResponseBody newOrder(OrderRequestBody orderRequestBody, Member member) {
   public OrderDto newOrder(OrderRequestBody orderRequestBody, Member member) {
 
-    Set<OrderItem> orderItems = new HashSet<>();
+    List<OrderItem> orderItems = new ArrayList<>();
 
 //    Set<OrderItemResponseBody> responseBodySet = new HashSet<>();
 
@@ -66,7 +63,6 @@ public class OrderService {
     }
 
     Order order = new Order(member, LocalDateTime.now(), orderItems);
-
     orderRepository.save(order);
     return OrderDto.from(order);
 //    return new OrderResponseBody(responseBodySet);

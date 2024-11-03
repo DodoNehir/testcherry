@@ -16,7 +16,10 @@ spring:
     generate-ddl: false
     open-in-view: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
 
   security:
     user:
@@ -31,6 +34,7 @@ spring:
 logging:
   level:
     root: info
+    org.hibernate.sql: debug
 #    org.hibernate.type: debug
 #    org.springframework.orm.jpa: debug
 #    org.springframework.transaction: debug
