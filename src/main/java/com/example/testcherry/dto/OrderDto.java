@@ -3,25 +3,36 @@ package com.example.testcherry.dto;
 import com.example.testcherry.domain.Order;
 import com.example.testcherry.domain.OrderItem;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import java.util.HashMap;
-import java.util.Map;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record OrderDto(
-    Long memberId,
-    Map<Long, Integer> quantityOfProducts // < product id , 개수 >
+    @NotNull MemberDto memberDto,
+
+    @NotNull
+    LocalDateTime orderDate,
+
+    @NotEmpty(message = "주문 정보를 입력해주세요")
+    Set<OrderItemDto> orderItemDtoSet
 ) {
 
+  // entity 에서 dto 로 변환
   public static OrderDto from(Order order) {
 
-    Map<Long, Integer> quantityOfProducts = new HashMap<>();
+    Set<OrderItemDto> orderItemDtoSet = new HashSet<>();
+
     for (OrderItem orderItem : order.getOrderItems()) {
-      quantityOfProducts.put(orderItem.getProductId(), orderItem.getOrderQuantity());
+      orderItemDtoSet.add((OrderItemDto.from(orderItem)));
     }
 
     return new OrderDto(
-        order.getMemberId(),
-        quantityOfProducts
+        MemberDto.from(order.getMember()),
+        order.getOrderDate(),
+        orderItemDtoSet
     );
   }
 

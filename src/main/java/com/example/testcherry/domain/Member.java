@@ -33,17 +33,16 @@ public class Member implements UserDetails {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long memberId;
 
-  @NotBlank(message = "이름을 입력해주세요")
+  @NotBlank
   private String username;
 
-  @NotBlank(message = "비밀번호를 입력해주세요")
+  @NotBlank
   private String password;
 
-  @NotBlank(message = "주소를 입력해주세요")
+  @NotBlank
   private String address;
 
-  @NotBlank(message = "전화번호를 입력해주세요")
-  @Column(length = 15)
+  @NotBlank
   private String phoneNumber;
 
   private boolean active;

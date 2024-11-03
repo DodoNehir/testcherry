@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -22,12 +23,13 @@ public class Product {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long productId;
 
-  @NotBlank(message = "이름을 입력해주세요")
+  @NotBlank
   private String name;
 
+  @NotBlank
   private String description;
 
-  @NotNull(message = "개수를 입력해주세요")
+  @NotNull
   private Long quantity;
 
   public Product(String name, Long quantity) {

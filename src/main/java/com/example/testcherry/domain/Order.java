@@ -1,16 +1,19 @@
 package com.example.testcherry.domain;
 
 import com.example.testcherry.dto.OrderDto;
+import com.example.testcherry.dto.OrderItemDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -26,41 +29,39 @@ public class Order {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long orderId;
 
-  private Long memberId;
+  @ManyToOne
+  @JoinColumn(name = "member_id")
+  private Member member;
 
   private LocalDateTime orderDate;
 
-  // order와 order item이 연결되어 있다는 것을 알린다.
-//  @MappedCollection(idColumn = "order_id", keyColumn = "order_item_id")
-  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-  private Set<OrderItem> orderItems = new HashSet<>();
+  @OneToMany(cascade = CascadeType.ALL)
+  private Set<OrderItem> orderItems;
 
 
-  public Order(Long memberId, Set<OrderItem> orderItems) {
-    this.memberId = memberId;
-    this.orderDate = LocalDateTime.now();
+  public Order(Member member, LocalDateTime orderDate, Set<OrderItem> orderItems) {
+    this.member = member;
+    this.orderDate = orderDate;
     this.orderItems = orderItems;
-
-    for (OrderItem orderItem : orderItems) {
-      orderItem.setOrder(this);
-    }
   }
 
+  // dto 에서 entity 로 변환
   public static Order of(OrderDto orderDto) {
     Set<OrderItem> orderItems = new HashSet<>();
 
-    for (Map.Entry<Long, Integer> entry : orderDto.quantityOfProducts().entrySet()) {
-      orderItems.add(new OrderItem(entry.getKey(), entry.getValue()));
+    for (OrderItemDto entry : orderDto.orderItemDtoSet()) {
+      orderItems.add(OrderItem.of(entry));
     }
 
-    Order order = new Order(orderDto.memberId(), orderItems);
-
-    for (OrderItem orderItem : orderItems) {
-      orderItem.setOrder(order);
-    }
-
-    return order;
+    return new Order(
+        Member.of(orderDto.memberDto()),
+        orderDto.orderDate(),
+        orderItems);
   }
 
+  @PrePersist
+  public void prePersist() {
+    orderDate = LocalDateTime.now();
+  }
 
 }
