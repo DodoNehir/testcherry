@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
@@ -26,7 +27,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 @SQLDelete(sql = "UPDATE \"MEMBERS\" SET active = false WHERE memberId = ?")
 @SQLRestriction("active = true")
 @Entity
-@Table(name = "MEMBERS")
+@Table(name = "MEMBERS",
+    indexes = {@Index(name = "members_username_idx", columnList = "username", unique = true)})
 public class Member implements UserDetails {
 
   @Id
