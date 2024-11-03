@@ -3,6 +3,7 @@ package com.example.testcherry.service;
 import com.example.testcherry.domain.Order;
 import com.example.testcherry.domain.Product;
 import com.example.testcherry.dto.OrderDto;
+import com.example.testcherry.dto.OrderItemDto;
 import com.example.testcherry.repository.OrderRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,25 +23,25 @@ public class OrderService {
   }
 
   public void newOrder(OrderDto orderDto) {
-    List<Product> productList = new ArrayList<>();
-    // 재고 조사
-    for (Map.Entry<Long, Integer> entry : orderDto.quantityOfProducts().entrySet()) {
-      Long productId = entry.getKey();
-      Integer buyQuantity = entry.getValue();
-
-      Product product = productService.checkStock(productId);
-      if (product.getQuantity() < buyQuantity) {
-        throw new RuntimeException("product id " + productId + " is out of stock");
-      }
-
-      product.adjustStockMinus(buyQuantity.longValue());
-      productList.add(product);
-    }
+//    List<Product> productList = new ArrayList<>();
+    // TODO: 재고 조사
+//    for (OrderItemDto entry : orderDto.orderItemDtoSet()) {
+//      Long productId = entry.productDto().;
+//      Integer buyQuantity = entry.getValue();
+//
+//      Product product = productService.checkStock(productId);
+//      if (product.getQuantity() < buyQuantity) {
+//        throw new RuntimeException("product id " + productId + " is out of stock");
+//      }
+//
+//      product.adjustStockMinus(buyQuantity.longValue());
+//      productList.add(product);
+//    }
 
     // 개수 충분하면 Order 저장하고 재고 개수 업데이트
     Order order = Order.of(orderDto);
     orderRepository.save(order);
-    productService.saveAll(productList);
+//    productService.saveAll(productList);
   }
 
 

@@ -17,6 +17,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -43,10 +44,10 @@ public class Member implements UserDetails {
   private String address;
 
   @NotBlank
+  @Length(max = 15)
   private String phoneNumber;
 
   private boolean active;
-
 
 
   public Member(String username, String password, String address, String phoneNumber) {
