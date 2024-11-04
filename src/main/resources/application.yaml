@@ -10,13 +10,16 @@ spring:
 #    console:
 #      enabled: true
 
+  sql:
+    init:
+      mode: never
+
   jpa:
     show-sql: true
     database: postgresql
-    generate-ddl: false
-    open-in-view: false
+    defer-datasource-initialization: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -34,7 +37,7 @@ spring:
 logging:
   level:
     root: info
-    org.hibernate.sql: debug
+#    org.hibernate.sql: debug
 #    org.hibernate.type: debug
 #    org.springframework.orm.jpa: debug
 #    org.springframework.transaction: debug
