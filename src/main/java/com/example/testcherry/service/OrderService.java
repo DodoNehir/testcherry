@@ -1,5 +1,6 @@
 package com.example.testcherry.service;
 
+import com.example.testcherry.exception.OutOfStockException;
 import com.example.testcherry.model.dto.OrderDto;
 import com.example.testcherry.model.dto.OrderItemDto;
 import com.example.testcherry.model.dto.ProductDto;
@@ -46,7 +47,7 @@ public class OrderService {
 
       Product product = productService.checkStock(productId);
       if (product.getQuantity() < buyQuantity) {
-        throw new RuntimeException("product id " + productId + " is out of stock");
+        throw new OutOfStockException(productId);
       }
 
       product.adjustStockMinus(buyQuantity);

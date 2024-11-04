@@ -2,12 +2,19 @@ package com.example.testcherry.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
+import com.example.testcherry.exception.OutOfStockException;
+import com.example.testcherry.model.entity.Member;
 import com.example.testcherry.model.entity.Product;
-import com.example.testcherry.model.dto.OrderDto;
+import com.example.testcherry.model.order.OrderRequestBody;
+import com.example.testcherry.model.order_item.OrderItemRequestBody;
+import com.example.testcherry.repository.MemberRepository;
+import com.example.testcherry.repository.OrderItemRepository;
 import com.example.testcherry.repository.OrderRepository;
-import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,51 +29,85 @@ class OrderServiceTest {
   OrderRepository orderRepository;
 
   @Mock
+  OrderItemRepository orderItemRepository;
+
+  @Mock
+  MemberRepository memberRepository;
+
+  @Mock
   ProductService productService;
 
   @InjectMocks
   OrderService orderService;
 
-//  @Test
-//  @DisplayName("재고가 있을 때의 정상주문")
-//  public void stockQuantityTest_success() {
-//    // given
-//    Integer stockQuantity = 100;
-//    int buyQuantity = 50;
-//    HashMap<Long, Integer> orderMap = new HashMap<>();
-//    orderMap.put(1, buyQuantity);
-//
-//    // newOrder method 호출 때 필요한 것들
-//    OrderDto orderDto = new OrderDto(1L, orderMap);
-//    Product product = new Product("sajo", stockQuantity);
-//    when(productService.checkStock(1L)).thenReturn(product);
-//
-//    // when
-//    orderService.newOrder(orderDto);
-//
-//    // then
-//    assertThat(product.getQuantity()).isEqualTo(stockQuantity - buyQuantity);
-//  }
+  @Test
+  @DisplayName("재고가 있을 때의 정상주문")
+  public void stockQuantityTest_success() {
+    // given
+    Member member = new Member("qwerty", "qwerty", "qwerty", "qwerty");
+    memberRepository.save(member);
 
-//  @Test
-//  @DisplayName("재고가 없을 때 예외발생")
-//  public void stockQuantityTest_failure() {
-//    // given
-//    Long stockQuantity = 10L;
-//    int buyQuantity = 100;
-//    HashMap<Long, Integer> orderMap = new HashMap<>();
-//    Long productId = 1L;
-//    orderMap.put(productId, buyQuantity);
-//
-//    OrderDto orderDto = new OrderDto(1L, orderMap);
-//    Product product = new Product("sajo", stockQuantity);
-//    when(productService.checkStock(1L)).thenReturn(product);
-//
-//    // when & then
-//    RuntimeException runtimeException = assertThrows(RuntimeException.class,
-//        () -> orderService.newOrder(orderDto));
-//    assertThat(runtimeException.getMessage()).isEqualTo(
-//        "product id " + productId + " is out of stock");
-//  }
+    Integer stockQuantity = 100;
+    Integer buyQuantity = 30;
+    Product product1 = new Product("sajo", stockQuantity);
+    Product product2 = new Product("apple", stockQuantity);
+    Product product3 = new Product("tiramisu", stockQuantity);
+
+    Set<OrderItemRequestBody> itemSet = new HashSet<>();
+    for (int i = 1; i < 4; i++) {
+      OrderItemRequestBody item = new OrderItemRequestBody(Integer.valueOf(i).longValue(),
+          buyQuantity);
+      itemSet.add(item);
+    }
+
+    // newOrder method 호출 때 필요한 것들
+    OrderRequestBody orderRequestBody = new OrderRequestBody(itemSet);
+
+    when(productService.checkStock(1L)).thenReturn(product1);
+    when(productService.checkStock(2L)).thenReturn(product2);
+    when(productService.checkStock(3L)).thenReturn(product3);
+
+    // when
+    orderService.newOrder(orderRequestBody, member);
+
+    // then
+    assertThat(product1.getQuantity()).isEqualTo(stockQuantity - buyQuantity);
+    assertThat(product2.getQuantity()).isEqualTo(stockQuantity - buyQuantity);
+    assertThat(product3.getQuantity()).isEqualTo(stockQuantity - buyQuantity);
+
+  }
+
+  @Test
+  @DisplayName("재고가 없을 때 예외발생")
+  public void stockQuantityTest_failure() {
+    // given
+    Member member = new Member("qwerty", "qwerty", "qwerty", "qwerty");
+    memberRepository.save(member);
+
+    Integer stockQuantity = 10;
+    Integer buyQuantity = 30;
+    Product product1 = new Product("sajo", stockQuantity);
+    Product product2 = new Product("apple", stockQuantity);
+    Product product3 = new Product("tiramisu", stockQuantity);
+
+    Set<OrderItemRequestBody> itemSet = new HashSet<>();
+    for (int i = 1; i < 4; i++) {
+      OrderItemRequestBody item = new OrderItemRequestBody(Integer.valueOf(i).longValue(),
+          buyQuantity);
+      itemSet.add(item);
+    }
+
+    OrderRequestBody orderRequestBody = new OrderRequestBody(itemSet);
+
+    lenient().when(productService.checkStock(1L)).thenReturn(product1);
+    lenient().when(productService.checkStock(2L)).thenReturn(product2);
+    lenient().when(productService.checkStock(3L)).thenReturn(product3);
+
+    // when & then
+//    OutOfStockException outOfStockException =
+    assertThrows(OutOfStockException.class, () -> orderService.newOrder(orderRequestBody, member));
+
+//    assertThat(runtimeException.getMessage()).isEqualTo("product id " + 1L + " is out of stock");
+  }
 
 }
