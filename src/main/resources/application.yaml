@@ -3,8 +3,8 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://dpg-cs4ld0l6l47c73fvn82g-a.oregon-postgres.render.com/mydb_o1aj
-    username: mydb_o1aj_user
-    password: h1uzCpcHAtAMHGlIx5sEuHJW3CR8nx4o
+    username: ${MY_DB_NAME}
+    password: ${MY_DB_PASSWORD}
 
 #  h2:
 #    console:
@@ -38,3 +38,6 @@ logging:
 #    org.hibernate.type: debug
 #    org.springframework.orm.jpa: debug
 #    org.springframework.transaction: debug
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}

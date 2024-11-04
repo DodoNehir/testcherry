@@ -2,10 +2,12 @@ package com.example.testcherry.service;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +15,12 @@ import org.springframework.stereotype.Service;
 public class JwtService {
 
   private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
-  private static final SecretKey key = Jwts.SIG.HS256.key().build();
+  //  private static final SecretKey key = Jwts.SIG.HS256.key().build();
+  private final SecretKey key;
+
+  public JwtService(@Value("${jwt.secret-key}") SecretKey key) {
+    this.key = Keys.hmacShaKeyFor(key.getEncoded());
+  }
 
   public String generateAccessToken(UserDetails userDetails) {
     return generateToken(userDetails.getUsername());
