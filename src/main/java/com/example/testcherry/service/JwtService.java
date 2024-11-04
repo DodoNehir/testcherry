@@ -2,7 +2,9 @@ package com.example.testcherry.service;
 
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import javax.crypto.SecretKey;
 import org.slf4j.Logger;
@@ -18,8 +20,8 @@ public class JwtService {
   //  private static final SecretKey key = Jwts.SIG.HS256.key().build();
   private final SecretKey key;
 
-  public JwtService(@Value("${jwt.secret-key}") SecretKey key) {
-    this.key = Keys.hmacShaKeyFor(key.getEncoded());
+  public JwtService(@Value("${jwt.secret-key}") String key) {
+    this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(key));
   }
 
   public String generateAccessToken(UserDetails userDetails) {
