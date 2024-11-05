@@ -6,6 +6,7 @@ import com.example.testcherry.model.entity.Member;
 import com.example.testcherry.model.member.LoginRequestBody;
 import com.example.testcherry.model.member.MemberAuthenticationResponse;
 import com.example.testcherry.repository.MemberRepository;
+import java.util.Optional;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -51,9 +52,10 @@ public class MemberService {
   }
 
   public void updateMemberInfo(Long id, MemberDto memberDto) {
-    memberRepository.findById(id)
+    Member member = memberRepository.findById(id)
         .orElseThrow(() -> new MemberNotFoundException(id));
-    memberRepository.save(Member.of(memberDto));
+    member.update(memberDto);
+    memberRepository.save(member);
   }
 
   public void deleteMemberById(Long id) {

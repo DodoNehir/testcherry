@@ -48,17 +48,9 @@ public class Product {
         productDto.quantity());
   }
 
-  public void updateName(String newName) {
-    this.name = newName;
-  }
-
-  public void updateDescription(String newDescription) {
-    this.description = newDescription;
-  }
-
   public void adjustStockPlus(Integer quantity) {
     if (quantity < 0) {
-      throw new RuntimeException("음수를 추가할 수 없습니다.");
+      throw new RuntimeException("음수의 재고를 더할 수 없습니다.");
     }
     this.quantity += quantity;
   }
@@ -68,6 +60,20 @@ public class Product {
       throw new RuntimeException("재고보다 많을 수 없습니다.");
     }
     this.quantity -= quantity;
+  }
+
+  public void update(ProductDto productDto) {
+    if (!productDto.name().isBlank()) {
+      this.name = productDto.name();
+    }
+    if (!productDto.description().isBlank()) {
+      this.description = productDto.description();
+    }
+    if (productDto.quantity() != null) {
+      if (productDto.quantity() >= 0) {
+        this.quantity = productDto.quantity();
+      }
+    }
   }
 
 }
