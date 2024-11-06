@@ -1,7 +1,10 @@
 package com.example.testcherry.model.entity;
 
 import com.example.testcherry.model.dto.MemberDto;
+import com.example.testcherry.model.member.Role;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -19,6 +22,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
@@ -48,6 +52,9 @@ public class Member implements UserDetails {
   @Length(max = 15)
   private String phoneNumber;
 
+  @Enumerated(value = EnumType.STRING)
+  private Role role;
+
   private boolean active;
 
 
@@ -56,7 +63,6 @@ public class Member implements UserDetails {
     this.password = password;
     this.address = address;
     this.phoneNumber = phoneNumber;
-    this.active = true;
   }
 
   public static Member of(MemberDto memberDto) {
@@ -68,6 +74,7 @@ public class Member implements UserDetails {
 
   @PrePersist
   public void prePersist() {
+    this.role = Role.USER;
     this.active = true;
   }
 
@@ -89,6 +96,10 @@ public class Member implements UserDetails {
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of();
+    if (role == Role.ADMIN) {
+      return List.of(new SimpleGrantedAuthority("ROLE_" + Role.ADMIN),
+          new SimpleGrantedAuthority("ROLE_" + Role.USER));
+    }
+    return List.of(new SimpleGrantedAuthority("ROLE_" + Role.USER));
   }
 }

@@ -1,5 +1,6 @@
 package com.example.testcherry.config;
 
+import com.example.testcherry.model.member.Role;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,8 +44,19 @@ public class WebConfiguration {
     http.cors(Customizer.withDefaults())
         .authorizeHttpRequests(
             (requests) -> requests
+                // member C: permitAll, R: ADMIN, UD: indivisual & ADMIN
                 .requestMatchers(HttpMethod.POST, "/members", "/members/authenticate")
                 .permitAll()
+                .requestMatchers(HttpMethod.GET, "/members")
+                .hasRole(Role.ADMIN.name())
+                .requestMatchers("/members")
+                .hasRole(Role.USER.name())
+
+                // product R: Permit All, CUD: ADMIN
+                .requestMatchers(HttpMethod.GET, "/products", "/products/all", "/products/name/")
+                .permitAll()
+                .requestMatchers("/products")
+                .hasRole(Role.ADMIN.name())
 
                 .anyRequest().authenticated()) // 모든 request에 대해
         .sessionManagement(

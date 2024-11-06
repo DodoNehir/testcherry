@@ -9,10 +9,12 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "PRODUCTS")
 @Entity
@@ -31,10 +33,6 @@ public class Product {
   @NotNull
   private Integer quantity;
 
-  public Product(String name, Integer quantity) {
-    this.name = name;
-    this.quantity = quantity;
-  }
 
   public Product(String name, String description, Integer quantity) {
     this.name = name;
