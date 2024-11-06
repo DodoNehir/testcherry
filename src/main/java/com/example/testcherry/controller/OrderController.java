@@ -6,6 +6,7 @@ import com.example.testcherry.model.entity.Response;
 import com.example.testcherry.model.order.OrderRequestBody;
 import com.example.testcherry.model.order.OrderResponseBody;
 import com.example.testcherry.service.OrderService;
+import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +24,7 @@ public class OrderController {
   }
 
   @PostMapping
-  public Response<OrderDto> createOrder(@RequestBody OrderRequestBody orderRequestBody,
+  public Response<OrderDto> createOrder(@Valid @RequestBody OrderRequestBody orderRequestBody,
       Authentication authentication) {
 
     OrderDto orderResponseBody = orderService.newOrder(orderRequestBody,
