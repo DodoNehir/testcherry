@@ -31,6 +31,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+    implementation("net.datafaker:datafaker:2.4.1")
 
     runtimeOnly("org.postgresql:postgresql")
     implementation("io.jsonwebtoken:jjwt-impl:0.12.6")
