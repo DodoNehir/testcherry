@@ -4,7 +4,6 @@ import com.example.testcherry.exception.ProductNotFoundException;
 import com.example.testcherry.model.dto.ProductDto;
 import com.example.testcherry.model.entity.Product;
 import com.example.testcherry.repository.ProductRepository;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
@@ -29,9 +28,7 @@ public class ProductService {
   }
 
   public List<ProductDto> findAll() {
-    List<ProductDto> productDtos = new ArrayList<>();
-    productRepository.findAll().forEach(product -> productDtos.add(ProductDto.from(product)));
-    return productDtos;
+    return productRepository.findAll().stream().map(ProductDto::from).toList();
   }
 
   public ProductDto findProductById(Long id) {
