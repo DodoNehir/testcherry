@@ -1,13 +1,13 @@
 package com.example.testcherry.service;
 
+import com.example.testcherry.exception.ForbiddenException;
 import com.example.testcherry.exception.MemberNotFoundException;
 import com.example.testcherry.model.dto.MemberDto;
 import com.example.testcherry.model.entity.Member;
 import com.example.testcherry.model.member.LoginRequestBody;
 import com.example.testcherry.model.member.MemberAuthenticationResponse;
+import com.example.testcherry.model.member.MemberDeleteRequest;
 import com.example.testcherry.repository.MemberRepository;
-import java.util.Optional;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -51,16 +51,24 @@ public class MemberService {
         .orElseThrow(() -> new MemberNotFoundException(username));
   }
 
-  public void updateMemberInfo(Long id, MemberDto memberDto) {
-    Member member = memberRepository.findById(id)
-        .orElseThrow(() -> new MemberNotFoundException(id));
-    member.update(memberDto);
-    memberRepository.save(member);
+  public void updateMemberInfo(Member member, MemberDto updateMemberDto) {
+    UserDetails userDetails = loadMemberByUsername(member.getUsername());
+    if (userDetails.getPassword().equals(updateMemberDto.password())) {
+      member.update(updateMemberDto);
+      memberRepository.save(member);
+    } else {
+      throw new ForbiddenException();
+    }
   }
 
-  public void deleteMemberById(Long id) {
-    memberRepository.findById(id)
-        .orElseThrow(() -> new MemberNotFoundException(id));
+  public void deleteMemberByUsername(Member member, MemberDeleteRequest request) {
+    UserDetails userDetails = loadMemberByUsername(member.getUsername());
+
+    if (userDetails.getPassword().equals(request.password())) {
+      memberRepository.deleteByUsername(request.username());
+    } else {
+      throw new ForbiddenException();
+    }
   }
 
 

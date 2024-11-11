@@ -33,11 +33,7 @@ public class ProductController {
   @CheckRole(roles = Role.ADMIN)
   @Operation(summary = "상품 등록", description = "ADMIN 계정만 상품을 등록할 수 있습니다.")
   @PostMapping
-  public Response<ProductDto> registerProduct(@Valid @RequestBody ProductDto productDto,
-      Authentication authentication) {
-
-    // TODO: 권한 있는 사람만 등록할 수 있도록 확인해야 함
-//    authentication.getAuthorities()
+  public Response<ProductDto> registerProduct(@Valid @RequestBody ProductDto productDto) {
 
     ProductDto registeredProductDto = productService.registerProduct(productDto);
     return Response.success(registeredProductDto);
@@ -71,8 +67,7 @@ public class ProductController {
   @Operation(summary = "상품 정보 업데이트", description = "ADMIN 계정만 상품 정보를 수정할 수 있습니다.")
   @PatchMapping("/{id}")
   public Response<Void> updateProduct(@PathVariable("id") Long id,
-      @RequestBody ProductDto productDto,
-      Authentication authentication) {
+      @RequestBody ProductDto productDto) {
 
     productService.updateProductById(id, productDto);
     return Response.success(null);
@@ -81,8 +76,7 @@ public class ProductController {
   @CheckRole(roles = Role.ADMIN)
   @Operation(summary = "상품 정보 삭제", description = "ADMIN 계정만 상품을 삭제할 수 있습니다.")
   @DeleteMapping("/{id}")
-  public Response<Void> deleteProduct(@PathVariable("id") Long id,
-      Authentication authentication) {
+  public Response<Void> deleteProduct(@PathVariable("id") Long id) {
 
     productService.deleteProductById(id);
     return Response.success(null);

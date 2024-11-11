@@ -1,5 +1,6 @@
 package com.example.testcherry.model.member;
 
-public record MemberAuthenticationResponse(String accessToken) {
+public record MemberAuthenticationResponse(
+    String accessToken) {
 
 }

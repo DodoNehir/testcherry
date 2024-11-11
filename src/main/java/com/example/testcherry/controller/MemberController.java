@@ -1,10 +1,12 @@
 package com.example.testcherry.controller;
 
-import com.example.testcherry.model.entity.Response;
 import com.example.testcherry.model.dto.MemberDto;
+import com.example.testcherry.model.entity.Member;
+import com.example.testcherry.model.entity.Response;
 import com.example.testcherry.model.member.CheckRole;
 import com.example.testcherry.model.member.LoginRequestBody;
 import com.example.testcherry.model.member.MemberAuthenticationResponse;
+import com.example.testcherry.model.member.MemberDeleteRequest;
 import com.example.testcherry.model.member.Role;
 import com.example.testcherry.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,8 +42,10 @@ public class MemberController {
 
   @Operation(summary = "인증", description = "가입된 멤버가 맞는 지 확인합니다.")
   @PostMapping("/authenticate")
-  public Response<MemberAuthenticationResponse> authenticate(@Valid @RequestBody LoginRequestBody loginRequestBody) {
-    MemberAuthenticationResponse authenticationResponse = memberService.authenticate(loginRequestBody);
+  public Response<MemberAuthenticationResponse> authenticate(
+      @Valid @RequestBody LoginRequestBody loginRequestBody) {
+    MemberAuthenticationResponse authenticationResponse = memberService.authenticate(
+        loginRequestBody);
     return Response.success(authenticationResponse);
   }
 
@@ -61,20 +65,19 @@ public class MemberController {
 
   @CheckRole(roles = Role.MEMBER)
   @Operation(summary = "회원정보수정", description = "본인만 정보를 수정할 수 있습니다.")
-  @PatchMapping("/{id}")
-  public Response<Void> updateMember(@PathVariable("id") Long id,
-      @RequestBody MemberDto memberDto,
+  @PatchMapping("/update")
+  public Response<Void> updateMember(@RequestBody MemberDto updateMemberDto,
       Authentication authentication) {
-    memberService.updateMemberInfo(id, memberDto);
+    memberService.updateMemberInfo((Member) authentication.getDetails(), updateMemberDto);
     return Response.success(null);
   }
 
   @CheckRole(roles = Role.MEMBER)
   @Operation(summary = "회원탈퇴", description = "본인만 탈퇴할 수 있습니다.")
-  @DeleteMapping("/{id}")
-  public Response<Void> deleteMember(@PathVariable("id") Long id,
+  @DeleteMapping("/delete")
+  public Response<Void> deleteMember(@RequestBody MemberDeleteRequest request,
       Authentication authentication) {
-    memberService.deleteMemberById(id);
+    memberService.deleteMemberByUsername((Member) authentication.getDetails(), request);
     return Response.success(null);
   }
 
