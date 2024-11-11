@@ -1,5 +1,6 @@
 package com.example.testcherry.controller;
 
+import com.example.testcherry.exception.ForbiddenException;
 import com.example.testcherry.exception.MemberNotFoundException;
 import com.example.testcherry.model.entity.Response;
 import jakarta.validation.ConstraintViolationException;
@@ -12,6 +13,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+  @ExceptionHandler(ForbiddenException.class)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  public Response<Void> handleForbiddenException(ForbiddenException e) {
+    return Response.fail(HttpStatus.FORBIDDEN, e.getMessage());
+  }
 
   @ExceptionHandler(MemberNotFoundException.class)
   @ResponseStatus(HttpStatus.NOT_FOUND)

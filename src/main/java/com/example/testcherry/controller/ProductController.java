@@ -2,6 +2,8 @@ package com.example.testcherry.controller;
 
 import com.example.testcherry.model.dto.ProductDto;
 import com.example.testcherry.model.entity.Response;
+import com.example.testcherry.model.member.CheckRole;
+import com.example.testcherry.model.member.Role;
 import com.example.testcherry.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,6 +31,7 @@ public class ProductController {
     this.productService = productService;
   }
 
+  @CheckRole(roles = Role.ADMIN)
   @Operation(summary = "상품 등록", description = "ADMIN 계정만 상품을 등록할 수 있습니다.")
   @PostMapping
   public Response<ProductDto> registerProduct(@Valid @RequestBody ProductDto productDto,
@@ -51,7 +54,7 @@ public class ProductController {
 
   @Operation(summary = "id로 상품 조회", description = "등록된 상품을 id로 조회합니다. 모든 사용자가 사용가능합니다.")
   @GetMapping("/{id}")
-  public Response<ProductDto> getProductById(@RequestParam("id") Long id) {
+  public Response<ProductDto> getProductById(@PathVariable("id") Long id) {
 
     ProductDto productDto = productService.findProductById(id);
     return Response.success(productDto);
@@ -59,12 +62,13 @@ public class ProductController {
 
   @Operation(summary = "이름으로 상품 조회", description = "등록된 상품을 상품 이름으로 조회합니다. 모든 사용자가 사용가능합니다.")
   @GetMapping("/name/{name}")
-  public Response<ProductDto> getProductByName(@RequestParam("name") String name) {
+  public Response<ProductDto> getProductByName(@PathVariable("name") String name) {
 
     ProductDto productDto = productService.findProductByName(name);
     return Response.success(productDto);
   }
 
+  @CheckRole(roles = Role.ADMIN)
   @Operation(summary = "상품 정보 업데이트", description = "ADMIN 계정만 상품 정보를 수정할 수 있습니다.")
   @PatchMapping("/{id}")
   public Response<Void> updateProduct(@PathVariable("id") Long id,
@@ -75,6 +79,7 @@ public class ProductController {
     return Response.success(null);
   }
 
+  @CheckRole(roles = Role.ADMIN)
   @Operation(summary = "상품 정보 삭제", description = "ADMIN 계정만 상품을 삭제할 수 있습니다.")
   @DeleteMapping("/{id}")
   public Response<Void> deleteProduct(@PathVariable("id") Long id,

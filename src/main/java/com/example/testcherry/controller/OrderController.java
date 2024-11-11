@@ -3,6 +3,8 @@ package com.example.testcherry.controller;
 import com.example.testcherry.model.dto.OrderDto;
 import com.example.testcherry.model.entity.Member;
 import com.example.testcherry.model.entity.Response;
+import com.example.testcherry.model.member.CheckRole;
+import com.example.testcherry.model.member.Role;
 import com.example.testcherry.model.order.OrderRequestBody;
 import com.example.testcherry.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -25,6 +27,7 @@ public class OrderController {
     this.orderService = orderService;
   }
 
+  @CheckRole(roles = Role.MEMBER)
   @Operation(summary = "주문 생성", description = "MEMBER 만 주문할 수 있습니다.")
   @PostMapping
   public Response<OrderDto> createOrder(@Valid @RequestBody OrderRequestBody orderRequestBody,

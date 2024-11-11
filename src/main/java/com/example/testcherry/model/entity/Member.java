@@ -74,7 +74,7 @@ public class Member implements UserDetails {
 
   @PrePersist
   public void prePersist() {
-    this.role = Role.USER;
+    this.role = Role.MEMBER;
     this.active = true;
   }
 
@@ -98,8 +98,9 @@ public class Member implements UserDetails {
   public Collection<? extends GrantedAuthority> getAuthorities() {
     if (role == Role.ADMIN) {
       return List.of(new SimpleGrantedAuthority("ROLE_" + Role.ADMIN),
-          new SimpleGrantedAuthority("ROLE_" + Role.USER));
+          new SimpleGrantedAuthority("ROLE_" + Role.MEMBER));
+    } else {
+      return List.of(new SimpleGrantedAuthority("ROLE_" + Role.MEMBER));
     }
-    return List.of(new SimpleGrantedAuthority("ROLE_" + Role.USER));
   }
 }
