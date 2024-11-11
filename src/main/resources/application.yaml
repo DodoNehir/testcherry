@@ -1,14 +1,14 @@
 spring:
 
   datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://dpg-cs4ld0l6l47c73fvn82g-a.oregon-postgres.render.com/mydb_o1aj
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;
     username: ${MY_DB_NAME}
     password: ${MY_DB_PASSWORD}
 
-#  h2:
-#    console:
-#      enabled: true
+  h2:
+    console:
+      enabled: true
 
   sql:
     init:
@@ -16,10 +16,11 @@ spring:
 
   jpa:
     show-sql: true
-    database: postgresql
+#    database: postgresql
+    database: h2
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true

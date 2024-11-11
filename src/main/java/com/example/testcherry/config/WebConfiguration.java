@@ -2,11 +2,14 @@ package com.example.testcherry.config;
 
 import com.example.testcherry.model.member.Role;
 import java.util.List;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,6 +28,13 @@ public class WebConfiguration {
       JwtExceptionFilter jwtExceptionFilter) {
     this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     this.jwtExceptionFilter = jwtExceptionFilter;
+  }
+
+  @Bean
+  @ConditionalOnProperty(name = "spring.h2.console.enabled", havingValue = "true")
+  public WebSecurityCustomizer configureH2ConsoleEnable() {
+    return web -> web.ignoring()
+        .requestMatchers(PathRequest.toH2Console());
   }
 
   @Bean
