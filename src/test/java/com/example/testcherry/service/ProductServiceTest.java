@@ -67,28 +67,16 @@ class ProductServiceTest {
         ProductNotFoundException.class, () -> productService.findProductById(productId));
   }
 
-  @Test
-  void findProductByName_shouldReturnProductDto() {
-    // given
-    String name = "name";
-    Product product = new Product("name", "description", 10);
-    when(productRepository.findByName(name)).thenReturn(Optional.of(product));
 
-    // when
-    ProductDto result = productService.findProductByName(name);
-
-    // then
-    assertThat(result.name()).isEqualTo(product.getName());
-  }
 
   @Test
-  void findProductByName_shouldThrowException_whenProductNotFound() {
+  void findProductByName_shouldThrowException_whenAllNotFoundContaining() {
     // given
     String name = "name";
 
     // when & then
     assertThrows(
-        ProductNotFoundException.class, () -> productService.findProductByName(name));
+        ProductNotFoundException.class, () -> productService.findAllByNameContaining(name));
   }
 
   @Test

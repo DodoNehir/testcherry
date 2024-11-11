@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Product", description = "Product API")
@@ -62,10 +61,10 @@ public class ProductController {
 
   @Operation(summary = "이름으로 상품 조회", description = "등록된 상품을 상품 이름으로 조회합니다. 모든 사용자가 사용가능합니다.")
   @GetMapping("/name/{name}")
-  public Response<ProductDto> getProductByName(@PathVariable("name") String name) {
+  public Response<List<ProductDto>> getProductByName(@PathVariable("name") String name) {
 
-    ProductDto productDto = productService.findProductByName(name);
-    return Response.success(productDto);
+    List<ProductDto> productDtoList = productService.findAllByNameContaining(name);
+    return Response.success(productDtoList);
   }
 
   @CheckRole(roles = Role.ADMIN)

@@ -37,10 +37,10 @@ public class ProductService {
     return ProductDto.from(product);
   }
 
-  public ProductDto findProductByName(String name) {
-    Product product = productRepository.findByName(name)
-        .orElseThrow(() -> new ProductNotFoundException(name));
-    return ProductDto.from(product);
+  public List<ProductDto> findAllByNameContaining(String name) {
+    return productRepository.findAllByNameContaining(name)
+        .orElseThrow(() -> new ProductNotFoundException(name))
+        .stream().map(ProductDto::from).toList();
   }
 
   public void updateProductById(Long id, ProductDto productDto) {
