@@ -41,31 +41,45 @@ public class WebConfiguration {
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.cors(Customizer.withDefaults())
-        .authorizeHttpRequests(
-            (requests) -> requests
-                // member C: permitAll, R: ADMIN, UD: indivisual & ADMIN
-                .requestMatchers(HttpMethod.POST, "/members", "/members/authenticate")
-                .permitAll()
-                .requestMatchers(HttpMethod.GET, "/members")
-                .hasRole(Role.ADMIN.name())
-                .requestMatchers("/members")
-                .hasRole(Role.USER.name())
+    // csrf disable
+    http.csrf(CsrfConfigurer::disable);
 
-                // product R: Permit All, CUD: ADMIN
-                .requestMatchers(HttpMethod.GET, "/products", "/products/all", "/products/name/")
-                .permitAll()
-                .requestMatchers("/products")
-                .hasRole(Role.ADMIN.name())
+    // session은 생성되지 않도록
+    http.sessionManagement(
+        (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-                .anyRequest().authenticated()) // 모든 request에 대해
-        .sessionManagement(
-            (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        // session은 생성되지 않도록
-        .csrf(CsrfConfigurer::disable) // csrf는 disable
-        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-        .addFilterBefore(jwtExceptionFilter, jwtAuthenticationFilter.getClass())
-        .httpBasic(Customizer.withDefaults()); // basic auth는 사용
+    // cors
+    http.cors(Customizer.withDefaults());
+
+    // basic auth 사용 x
+//    http.httpBasic(Customizer.withDefaults());
+
+    // domain
+    http.authorizeHttpRequests(
+        (requests) -> requests
+            .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**")
+            .permitAll()
+
+            // member C: permitAll, R: ADMIN, UD: indivisual & ADMIN
+            .requestMatchers(HttpMethod.POST, "/members", "/members/authenticate")
+            .permitAll()
+            .requestMatchers(HttpMethod.GET, "/members")
+            .hasRole(Role.ADMIN.name())
+            .requestMatchers("/members")
+            .hasRole(Role.USER.name())
+
+            // product R: Permit All, CUD: ADMIN
+            .requestMatchers(HttpMethod.GET, "/products", "/products/all", "/products/name/")
+            .permitAll()
+            .requestMatchers("/products")
+            .hasRole(Role.ADMIN.name())
+
+            // 모든 request에 대해
+            .anyRequest().authenticated());
+
+    // filter chain
+    http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(jwtExceptionFilter, jwtAuthenticationFilter.getClass());
 
     return http.build();
   }
