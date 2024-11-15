@@ -9,11 +9,13 @@ import com.example.testcherry.model.member.MemberAuthenticationResponse;
 import com.example.testcherry.model.member.MemberDeleteRequest;
 import com.example.testcherry.repository.MemberRepository;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MemberService {
+public class MemberService implements UserDetailsService {
 
   private final MemberRepository memberRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -46,13 +48,14 @@ public class MemberService {
     return MemberDto.from(member);
   }
 
-  public UserDetails loadMemberByUsername(String username) {
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return memberRepository.findByUsername(username)
         .orElseThrow(() -> new MemberNotFoundException(username));
   }
 
   public void updateMemberInfo(Member member, MemberDto updateMemberDto) {
-    UserDetails userDetails = loadMemberByUsername(member.getUsername());
+    UserDetails userDetails = loadUserByUsername(member.getUsername());
     if (userDetails.getPassword().equals(updateMemberDto.password())) {
       member.update(updateMemberDto);
       memberRepository.save(member);
@@ -62,7 +65,7 @@ public class MemberService {
   }
 
   public void deleteMemberByUsername(Member member, MemberDeleteRequest request) {
-    UserDetails userDetails = loadMemberByUsername(member.getUsername());
+    UserDetails userDetails = loadUserByUsername(member.getUsername());
 
     if (userDetails.getPassword().equals(request.password())) {
       memberRepository.deleteByUsername(request.username());
@@ -89,4 +92,6 @@ public class MemberService {
 
     return new MemberAuthenticationResponse(toekn);
   }
+
+
 }

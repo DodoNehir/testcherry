@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
       String accessToken = authHeader.substring(7);
       String username = jwtService.getUsername(accessToken);
-      UserDetails member = memberService.loadMemberByUsername(username);
+      UserDetails member = memberService.loadUserByUsername(username);
 
       // controller단에서 인증 정보를 사용할 수 있도록 SecurityContext에 인증 설정
       UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(

@@ -24,6 +24,12 @@ public class DataLoadConfiguration implements ApplicationRunner {
   public void run(ApplicationArguments args) throws Exception {
     Faker faker = new Faker();
 
+    memberService.newMember(new MemberDto(
+        "qwe", "qwe",
+        "Seoul",
+        "010-0000-0000"
+    ));
+
     for (int i = 0; i < 20; i++) {
       MemberDto memberDto = new MemberDto(
           faker.twitter().twitterId(10),
