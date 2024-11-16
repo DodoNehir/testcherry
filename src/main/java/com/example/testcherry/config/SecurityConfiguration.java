@@ -5,6 +5,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -17,15 +19,22 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
-public class SpringSecurityConfiguration {
+public class SecurityConfiguration {
 
   private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final JwtExceptionFilter jwtExceptionFilter;
 
-  public SpringSecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter,
+  public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter,
       JwtExceptionFilter jwtExceptionFilter) {
     this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     this.jwtExceptionFilter = jwtExceptionFilter;
+  }
+
+  @Bean
+  public RoleHierarchy roleHierarchy() {
+    return RoleHierarchyImpl.withDefaultRolePrefix()
+        .role("ADMIN").implies("MEMBER")
+        .build();
   }
 
   @Bean
