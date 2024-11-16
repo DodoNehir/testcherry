@@ -11,6 +11,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -20,10 +21,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
   private JwtService jwtService;
   private MemberService memberService;
+  private UserDetailsService userDetailsService;
 
-  public JwtAuthenticationFilter(JwtService jwtService, MemberService memberService) {
+  public JwtAuthenticationFilter(JwtService jwtService, MemberService memberService,
+      UserDetailsService userDetailsService) {
     this.jwtService = jwtService;
     this.memberService = memberService;
+    this.userDetailsService = userDetailsService;
   }
 
   @Override
@@ -40,7 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
       String accessToken = authHeader.substring(7);
       String username = jwtService.getUsername(accessToken);
-      UserDetails member = memberService.loadUserByUsername(username);
+      UserDetails member = userDetailsService.loadUserByUsername(username);
 
       // controller단에서 인증 정보를 사용할 수 있도록 SecurityContext에 인증 설정
       UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(

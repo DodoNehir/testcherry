@@ -12,8 +12,6 @@ import jakarta.persistence.Index;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import java.util.Collection;
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -21,9 +19,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
 @EqualsAndHashCode
@@ -33,7 +28,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Entity
 @Table(name = "MEMBERS",
     indexes = {@Index(name = "members_username_idx", columnList = "username", unique = true)})
-public class Member implements UserDetails {
+public class Member {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -94,13 +89,5 @@ public class Member implements UserDetails {
     }
   }
 
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    if (role == Role.ADMIN) {
-      return List.of(new SimpleGrantedAuthority("ROLE_" + Role.ADMIN),
-          new SimpleGrantedAuthority("ROLE_" + Role.MEMBER));
-    } else {
-      return List.of(new SimpleGrantedAuthority("ROLE_" + Role.MEMBER));
-    }
-  }
+
 }

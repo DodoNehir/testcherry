@@ -7,15 +7,15 @@ import com.example.testcherry.model.entity.Member;
 import com.example.testcherry.model.member.LoginRequestBody;
 import com.example.testcherry.model.member.MemberAuthenticationResponse;
 import com.example.testcherry.model.member.MemberDeleteRequest;
+import com.example.testcherry.model.member.UserDetailsImpl;
 import com.example.testcherry.repository.MemberRepository;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MemberService implements UserDetailsService {
+public class MemberService {
 
   private final MemberRepository memberRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -29,9 +29,6 @@ public class MemberService implements UserDetailsService {
     this.jwtService = jwtService;
   }
 
-  public boolean isPresentUsername(String username) {
-    return memberRepository.findByUsername(username).isPresent();
-  }
 
   public MemberDto newMember(MemberDto memberDto) {
     Member savedMember = memberRepository
@@ -48,15 +45,13 @@ public class MemberService implements UserDetailsService {
     return MemberDto.from(member);
   }
 
-  @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+  public Member findMemberByUsername(String username) throws UsernameNotFoundException {
     return memberRepository.findByUsername(username)
         .orElseThrow(() -> new MemberNotFoundException(username));
   }
 
   public void updateMemberInfo(Member member, MemberDto updateMemberDto) {
-    UserDetails userDetails = loadUserByUsername(member.getUsername());
-    if (userDetails.getPassword().equals(updateMemberDto.password())) {
+    if (member.getPassword().equals(updateMemberDto.password())) {
       member.update(updateMemberDto);
       memberRepository.save(member);
     } else {
@@ -65,9 +60,7 @@ public class MemberService implements UserDetailsService {
   }
 
   public void deleteMemberByUsername(Member member, MemberDeleteRequest request) {
-    UserDetails userDetails = loadUserByUsername(member.getUsername());
-
-    if (userDetails.getPassword().equals(request.password())) {
+    if (member.getPassword().equals(request.password())) {
       memberRepository.deleteByUsername(request.username());
     } else {
       throw new ForbiddenException();
@@ -88,9 +81,9 @@ public class MemberService implements UserDetailsService {
       throw new MemberNotFoundException(username);
     }
 
-    String toekn = jwtService.generateAccessToken(member);
+    String token = jwtService.generateAccessToken(new UserDetailsImpl(member));
 
-    return new MemberAuthenticationResponse(toekn);
+    return new MemberAuthenticationResponse(token);
   }
 
 
