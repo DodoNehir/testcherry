@@ -3,11 +3,8 @@ package com.example.testcherry.controller;
 import com.example.testcherry.model.dto.MemberDto;
 import com.example.testcherry.model.entity.Member;
 import com.example.testcherry.model.entity.Response;
-import com.example.testcherry.model.member.CheckRole;
-import com.example.testcherry.model.member.LoginRequestBody;
-import com.example.testcherry.model.member.MemberAuthenticationResponse;
 import com.example.testcherry.model.member.MemberDeleteRequest;
-import com.example.testcherry.model.member.Role;
+import com.example.testcherry.model.member.UserDetailsImpl;
 import com.example.testcherry.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,28 +31,22 @@ public class MemberController {
   }
 
   @Operation(summary = "회원가입", description = "누구나 가입할 수 있습니다.")
-  @PostMapping
-  public Response<MemberDto> signUp(@Valid @RequestBody MemberDto memberDto) {
-    MemberDto newMemberDto = memberService.newMember(memberDto);
-    return Response.success(newMemberDto);
+  @PostMapping("/join")
+  public Response<String> join(@Valid @RequestBody MemberDto memberDto) {
+    String newMemberUsername = memberService.join(memberDto);
+    return Response.success(newMemberUsername);
   }
 
-  @Operation(summary = "인증", description = "가입된 멤버가 맞는 지 확인합니다.")
-  @PostMapping("/authenticate")
-  public Response<MemberAuthenticationResponse> authenticate(
-      @Valid @RequestBody LoginRequestBody loginRequestBody) {
-    MemberAuthenticationResponse authenticationResponse = memberService.authenticate(
-        loginRequestBody);
-    return Response.success(authenticationResponse);
-  }
-
-//  @PostMapping
-//  public Response<MemberDto> signIn(@Valid @RequestBody MemberDto memberDto) {
-//    MemberDto newMemberDto = memberService.newMember(memberDto);
-//    return Response.success(newMemberDto);
+//  @Operation(summary = "인증", description = "가입된 멤버가 맞는 지 확인합니다.")
+//  @PostMapping("/login")
+//  public Response<Void> login(
+//      @Valid @RequestBody LoginRequestBody loginRequestBody) {
+//    memberService.login(
+//        loginRequestBody);
+//    return Response.success(null);
 //  }
 
-  @CheckRole(roles = Role.ADMIN)
+
   @Operation(summary = "id로 회원찾기", description = "id는 회원의 순서를 말합니다. ADMIN 만 사용할 수 있습니다.")
   @GetMapping("/{id}")
   public Response<MemberDto> getMemberById(@PathVariable("id") Long id) {
@@ -63,21 +54,25 @@ public class MemberController {
     return Response.success(memberDto);
   }
 
-  @CheckRole(roles = Role.MEMBER)
   @Operation(summary = "회원정보수정", description = "본인만 정보를 수정할 수 있습니다.")
   @PatchMapping("/update")
   public Response<Void> updateMember(@RequestBody MemberDto updateMemberDto,
       Authentication authentication) {
-    memberService.updateMemberInfo((Member) authentication.getDetails(), updateMemberDto);
+
+    UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+    Member member = memberService.findMemberByUsername(userDetails.getUsername());
+    memberService.updateMemberInfo(member, updateMemberDto);
     return Response.success(null);
   }
 
-  @CheckRole(roles = Role.MEMBER)
   @Operation(summary = "회원탈퇴", description = "본인만 탈퇴할 수 있습니다.")
   @DeleteMapping("/delete")
   public Response<Void> deleteMember(@RequestBody MemberDeleteRequest request,
       Authentication authentication) {
-    memberService.deleteMemberByUsername((Member) authentication.getDetails(), request);
+
+    UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+    Member member = memberService.findMemberByUsername(userDetails.getUsername());
+    memberService.deleteMemberByUsername(member, request);
     return Response.success(null);
   }
 

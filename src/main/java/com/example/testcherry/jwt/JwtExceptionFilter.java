@@ -1,4 +1,4 @@
-package com.example.testcherry.config;
+package com.example.testcherry.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
@@ -30,7 +30,11 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
 
       HashMap<String, Object> errorMap = new HashMap<>();
       errorMap.put("code", HttpStatus.UNAUTHORIZED);
-      errorMap.put("message", e.getMessage());
+      if (e.getMessage() != null) {
+        errorMap.put("message", e.getMessage());
+      } else {
+        errorMap.put("message", "JwtException caught");
+      }
 
       ObjectMapper objectMapper = new ObjectMapper();
       response.getWriter().write(objectMapper.writeValueAsString(errorMap));

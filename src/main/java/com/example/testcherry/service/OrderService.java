@@ -15,6 +15,8 @@ import com.example.testcherry.repository.OrderRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class OrderService {
 
+  private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
   private final OrderRepository orderRepository;
   private final OrderItemRepository orderItemRepository;
   private final ProductService productService;
@@ -37,6 +40,7 @@ public class OrderService {
   //  public OrderResponseBody newOrder(OrderRequestBody orderRequestBody, Member member) {
   public OrderDto newOrder(OrderRequestBody orderRequestBody, Member member) {
 
+    logger.info("New Order");
     List<OrderItem> orderItems = new ArrayList<>();
 
 //    Set<OrderItemResponseBody> responseBodySet = new HashSet<>();

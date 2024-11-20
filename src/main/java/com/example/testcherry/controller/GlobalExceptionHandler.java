@@ -1,6 +1,7 @@
 package com.example.testcherry.controller;
 
 import com.example.testcherry.exception.ForbiddenException;
+import com.example.testcherry.exception.MemberAlreadyExistsException;
 import com.example.testcherry.exception.MemberNotFoundException;
 import com.example.testcherry.model.entity.Response;
 import jakarta.validation.ConstraintViolationException;
@@ -13,6 +14,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+  @ExceptionHandler(MemberAlreadyExistsException.class)
+  @ResponseStatus(HttpStatus.CONFLICT)
+  public Response<Void> handleMemberAlreadyExistsException(MemberAlreadyExistsException e) {
+    return Response.fail(HttpStatus.CONFLICT, e.getMessage());
+  }
 
   @ExceptionHandler(ForbiddenException.class)
   @ResponseStatus(HttpStatus.FORBIDDEN)

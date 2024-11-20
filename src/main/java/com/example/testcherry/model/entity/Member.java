@@ -2,6 +2,7 @@ package com.example.testcherry.model.entity;
 
 import com.example.testcherry.model.dto.MemberDto;
 import com.example.testcherry.model.member.Role;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -10,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
@@ -23,7 +25,7 @@ import org.hibernate.validator.constraints.Length;
 @Getter
 @EqualsAndHashCode
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE \"MEMBERS\" SET active = false WHERE memberId = ?")
+//@SQLDelete(sql = "UPDATE \"MEMBERS\" SET active = false WHERE username = ?")
 @SQLRestriction("active = true")
 @Entity
 @Table(name = "MEMBERS",
@@ -35,6 +37,7 @@ public class Member {
   private Long memberId;
 
   @NotBlank
+  @Column(unique = true)
   private String username;
 
   @NotBlank
@@ -60,6 +63,15 @@ public class Member {
     this.phoneNumber = phoneNumber;
   }
 
+  public Member(String username, String role) {
+    this.username = username;
+    this.password = "qwe";
+    this.role = Role.valueOf(role);
+    this.address = "token";
+    this.phoneNumber = "123456789";
+    this.active = true;
+  }
+
   public static Member of(MemberDto memberDto) {
     return new Member(memberDto.username(),
         memberDto.password(),
@@ -69,7 +81,7 @@ public class Member {
 
   @PrePersist
   public void prePersist() {
-    this.role = Role.MEMBER;
+    this.role = Role.ROLE_MEMBER;
     this.active = true;
   }
 
@@ -77,10 +89,12 @@ public class Member {
 //    this.active = false;
 //  }
 
+
+  public void delete() {
+    this.active = false;
+  }
+
   public void update(MemberDto memberDto) {
-    if (!memberDto.username().isBlank()) {
-      this.username = memberDto.username();
-    }
     if (!memberDto.address().isBlank()) {
       this.address = memberDto.address();
     }

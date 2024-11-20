@@ -24,7 +24,7 @@ public class DataLoadConfiguration implements ApplicationRunner {
   public void run(ApplicationArguments args) throws Exception {
     Faker faker = new Faker();
 
-    memberService.newMember(new MemberDto(
+    memberService.join(new MemberDto(
         "qwe", "qwe",
         "Seoul",
         "010-0000-0000"
@@ -37,7 +37,7 @@ public class DataLoadConfiguration implements ApplicationRunner {
           faker.address().fullAddress(),
           faker.phoneNumber().phoneNumber()
       );
-      memberService.newMember(memberDto);
+      memberService.join(memberDto);
     }
 
     for (int i = 0; i < 50; i++) {

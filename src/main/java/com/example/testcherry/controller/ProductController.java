@@ -2,14 +2,11 @@ package com.example.testcherry.controller;
 
 import com.example.testcherry.model.dto.ProductDto;
 import com.example.testcherry.model.entity.Response;
-import com.example.testcherry.model.member.CheckRole;
-import com.example.testcherry.model.member.Role;
 import com.example.testcherry.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -30,7 +27,6 @@ public class ProductController {
     this.productService = productService;
   }
 
-  @CheckRole(roles = Role.ADMIN)
   @Operation(summary = "상품 등록", description = "ADMIN 계정만 상품을 등록할 수 있습니다.")
   @PostMapping
   public Response<ProductDto> registerProduct(@Valid @RequestBody ProductDto productDto) {
@@ -63,7 +59,6 @@ public class ProductController {
     return Response.success(productDtoList);
   }
 
-  @CheckRole(roles = Role.ADMIN)
   @Operation(summary = "상품 정보 업데이트", description = "ADMIN 계정만 상품 정보를 수정할 수 있습니다.")
   @PatchMapping("/{id}")
   public Response<Void> updateProduct(@PathVariable("id") Long id,
@@ -73,7 +68,6 @@ public class ProductController {
     return Response.success(null);
   }
 
-  @CheckRole(roles = Role.ADMIN)
   @Operation(summary = "상품 정보 삭제", description = "ADMIN 계정만 상품을 삭제할 수 있습니다.")
   @DeleteMapping("/{id}")
   public Response<Void> deleteProduct(@PathVariable("id") Long id) {

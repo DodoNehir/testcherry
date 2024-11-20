@@ -1,16 +1,26 @@
 package com.example.testcherry.config;
 
+import com.example.testcherry.jwt.JwtExceptionFilter;
+import com.example.testcherry.jwt.JwtFilter;
+import com.example.testcherry.jwt.JwtUtil;
+import com.example.testcherry.jwt.LoginFilter;
+import com.example.testcherry.model.member.Role;
 import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
+import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -21,13 +31,27 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfiguration {
 
-  private final JwtAuthenticationFilter jwtAuthenticationFilter;
+  private final JwtFilter jwtFilter;
   private final JwtExceptionFilter jwtExceptionFilter;
+  private final AuthenticationConfiguration authenticationConfiguration;
+  private final JwtUtil jwtUtil;
 
-  public SecurityConfiguration(JwtAuthenticationFilter jwtAuthenticationFilter,
-      JwtExceptionFilter jwtExceptionFilter) {
-    this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+  public SecurityConfiguration(
+      JwtFilter jwtFilter,
+      JwtExceptionFilter jwtExceptionFilter,
+      AuthenticationConfiguration authenticationConfiguration,
+      JwtUtil jwtUtil) {
+    this.jwtFilter = jwtFilter;
     this.jwtExceptionFilter = jwtExceptionFilter;
+    this.authenticationConfiguration = authenticationConfiguration;
+    this.jwtUtil = jwtUtil;
+  }
+
+  @Bean
+  public AuthenticationManager authenticationManager(
+      AuthenticationConfiguration authenticationConfiguration)
+      throws Exception {
+    return authenticationConfiguration.getAuthenticationManager();
   }
 
   @Bean
@@ -58,51 +82,47 @@ public class SecurityConfiguration {
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    // csrf disable
-    http.csrf(CsrfConfigurer::disable);
 
-    // session은 생성되지 않도록
+    http.csrf(CsrfConfigurer::disable);
+    http.httpBasic(AbstractHttpConfigurer::disable);
+    http.formLogin(FormLoginConfigurer::disable);
+
     http.sessionManagement(
         (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
     // cors
     http.cors(Customizer.withDefaults());
 
-    // basic auth 사용 x
-//    http.httpBasic(Customizer.withDefaults());
-
     // domain
     http.authorizeHttpRequests(
         (requests) -> requests
             // Swagger UI
-//            .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**")
-//            .permitAll()
+            .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**")
+            .permitAll()
 
             // member C: permitAll, R: ADMIN, UD: MEMBER
-//            .requestMatchers(HttpMethod.POST, "/members", "/members/authenticate")
-//            .permitAll()
-//            .requestMatchers(HttpMethod.GET, "/members")
-//            .hasRole(Role.ADMIN.name())
-//            .requestMatchers("/members")
-//            .hasRole(Role.MEMBER.name())
+            .requestMatchers("/members/join", "/members/login").permitAll()
+            .requestMatchers("/members/**").hasAnyRole("MEMBER")
+            .requestMatchers(HttpMethod.GET, "/members/**").hasAnyRole("ADMIN")
 
             // product R: Permit All, CUD: ADMIN
-//            .requestMatchers(HttpMethod.GET, "/products/all", "/products/", "/products/name/")
-//            .permitAll()
-//            .requestMatchers("/products", "/products/")
-//            .hasRole(Role.ADMIN.name())
+            .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
+            .requestMatchers("/products", "/products/**").hasAnyRole("ADMIN")
 
             // order CRUD: MEMBER
             // Order 권한 에러는 로그인/가입 할 수 있도록 Redirect
-//            .requestMatchers("/orders")
-//            .hasRole(Role.MEMBER.name())
+            .requestMatchers("/orders").hasAnyRole("MEMBER")
 
             // 모든 request에 대해
-            .anyRequest().permitAll());
+            .anyRequest().authenticated());
 
     // filter chain
-    http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-        .addFilterBefore(jwtExceptionFilter, jwtAuthenticationFilter.getClass());
+    LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration),
+        jwtUtil);
+    loginFilter.setFilterProcessesUrl("/members/login");
+    http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
+    http.addFilterBefore(jwtFilter, LoginFilter.class)
+        .addFilterBefore(jwtExceptionFilter, JwtFilter.class);
 
     return http.build();
   }

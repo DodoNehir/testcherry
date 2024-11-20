@@ -1,57 +1,62 @@
 package com.example.testcherry.service;
 
 import com.example.testcherry.exception.ForbiddenException;
+import com.example.testcherry.exception.MemberAlreadyExistsException;
 import com.example.testcherry.exception.MemberNotFoundException;
 import com.example.testcherry.model.dto.MemberDto;
 import com.example.testcherry.model.entity.Member;
-import com.example.testcherry.model.member.LoginRequestBody;
-import com.example.testcherry.model.member.MemberAuthenticationResponse;
 import com.example.testcherry.model.member.MemberDeleteRequest;
-import com.example.testcherry.model.member.UserDetailsImpl;
 import com.example.testcherry.repository.MemberRepository;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class MemberService {
 
+  private static final Logger logger = LoggerFactory.getLogger(MemberService.class);
   private final MemberRepository memberRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
-  private final JwtService jwtService;
 
   public MemberService(MemberRepository memberRepository,
-      BCryptPasswordEncoder bCryptPasswordEncoder,
-      JwtService jwtService) {
+      BCryptPasswordEncoder bCryptPasswordEncoder) {
     this.memberRepository = memberRepository;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    this.jwtService = jwtService;
   }
 
 
-  public MemberDto newMember(MemberDto memberDto) {
-    Member savedMember = memberRepository
-        .save(new Member(memberDto.username(),
+  public String join(MemberDto memberDto) {
+    String username = memberDto.username();
+
+    if (memberRepository.existsByUsername(username)) {
+      throw new MemberAlreadyExistsException(username);
+    }
+
+    memberRepository.save(
+        new Member(memberDto.username(),
             bCryptPasswordEncoder.encode(memberDto.password()),
             memberDto.address(),
             memberDto.phoneNumber()));
-    return MemberDto.from(savedMember);
+    return username;
   }
 
   public MemberDto findMemberById(Long id) {
+    logger.info("Find member by id: {}", id);
     Member member = memberRepository.findById(id)
         .orElseThrow(() -> new MemberNotFoundException(id));
     return MemberDto.from(member);
   }
 
-  public Member findMemberByUsername(String username) throws UsernameNotFoundException {
+  public Member findMemberByUsername(String username) {
+    logger.info("Find member by username: {}", username);
     return memberRepository.findByUsername(username)
         .orElseThrow(() -> new MemberNotFoundException(username));
   }
 
   public void updateMemberInfo(Member member, MemberDto updateMemberDto) {
-    if (member.getPassword().equals(updateMemberDto.password())) {
+    logger.info("Update member info: {}", updateMemberDto);
+    if (bCryptPasswordEncoder.matches(updateMemberDto.password(), member.getPassword())) {
       member.update(updateMemberDto);
       memberRepository.save(member);
     } else {
@@ -60,31 +65,29 @@ public class MemberService {
   }
 
   public void deleteMemberByUsername(Member member, MemberDeleteRequest request) {
-    if (member.getPassword().equals(request.password())) {
-      memberRepository.deleteByUsername(request.username());
+    logger.info("Delete member by username: {}", request);
+    if (bCryptPasswordEncoder.matches(request.password(), member.getPassword())) {
+      member.delete();
+      memberRepository.save(member);
     } else {
       throw new ForbiddenException();
     }
   }
 
+//  public void login(LoginRequestBody loginRequestBody) {
+//    String username = loginRequestBody.username();
+//    String password = loginRequestBody.password();
+//
+  // id
+//    Member member = memberRepository.findByUsername(username)
+//        .orElseThrow(() -> new MemberNotFoundException(username));
 
-  public MemberAuthenticationResponse authenticate(LoginRequestBody loginRequestBody) {
-    String username = loginRequestBody.username();
-    String password = loginRequestBody.password();
-
-    // id
-    Member member = memberRepository.findByUsername(username)
-        .orElseThrow(() -> new MemberNotFoundException(username));
-
-    // password
-    if (!bCryptPasswordEncoder.matches(password, member.getPassword())) {
-      throw new MemberNotFoundException(username);
-    }
-
-    String token = jwtService.generateAccessToken(new UserDetailsImpl(member));
-
-    return new MemberAuthenticationResponse(token);
-  }
+  // password
+//    if (!bCryptPasswordEncoder.matches(password, member.getPassword())) {
+//      throw new MemberNotFoundException(username);
+//    }
+//
+//  }
 
 
 }
