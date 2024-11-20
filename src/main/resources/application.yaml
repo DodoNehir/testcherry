@@ -45,3 +45,6 @@ logging:
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
+
+springdoc:
+  show-login-endpoint: true
