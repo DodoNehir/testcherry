@@ -32,14 +32,27 @@ public class JwtUtil {
 //    return getSubject(accessToken);
 //  }
 
-  public String generateToken(String username, String role, Long expiration) {
+  public String generateToken(String category, String username, String role, Long expiration) {
+    // refresh를 들고 오면 access 사용 불가하도록
     return Jwts.builder()
+        .claim("category", category)
         .claim("username", username)
         .claim("role", role)
         .issuedAt(new Date(System.currentTimeMillis()))
         .expiration(new Date(System.currentTimeMillis() + expiration))
         .signWith(secretKey)
         .compact();
+  }
+
+  public String getCategory(String token) {
+    try {
+      return Jwts.parser().verifyWith(secretKey).build()
+          .parseSignedClaims(token)
+          .getPayload().get("category", String.class);
+    } catch (JwtException e) {
+      logger.error(e.getMessage());
+      throw e;
+    }
   }
 
   public String getUsername(String token) {

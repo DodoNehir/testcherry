@@ -6,12 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Iterator;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -71,9 +73,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     GrantedAuthority auth = iterator.next();
     String role = auth.getAuthority();
 
-    String token = jwtUtil.generateToken(username, role, 60 * 60 * 1000L);
+    String accessToken = jwtUtil.generateToken("access", username, role, 60 * 60 * 1000L);
+    String refreshToken = jwtUtil.generateToken("refresh", username, role, 24 * 60 * 60 * 1000L);
 
-    response.addHeader("Authorization", "Bearer " + token);
+    response.addHeader("Authorization", "Bearer " + accessToken);
+    response.addCookie(createCookie("refresh", refreshToken));
+    response.setStatus(HttpStatus.OK.value());
   }
 
   @Override
@@ -82,6 +87,15 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
       throws IOException, ServletException {
     //로그인 실패시 401 응답 코드 반환
     response.setStatus(401);
+  }
+
+  private Cookie createCookie(String key, String value) {
+    Cookie cookie = new Cookie(key, value);
+    cookie.setMaxAge(24 * 60 * 60);
+//    cookie.setSecure(true); // HTTPS
+//    cookie.setPath("/"); // 쿠키가 적용될 범위
+    cookie.setHttpOnly(true);
+    return cookie;
   }
 
 }

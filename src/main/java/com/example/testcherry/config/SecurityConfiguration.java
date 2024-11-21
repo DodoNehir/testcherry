@@ -116,12 +116,14 @@ public class SecurityConfiguration {
             // 모든 request에 대해
             .anyRequest().authenticated());
 
-    // filter chain
+    // login filter
     LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration),
         jwtUtil);
     loginFilter.setFilterProcessesUrl("/members/login");
-    http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class);
-    http.addFilterBefore(jwtFilter, LoginFilter.class)
+
+    // filter chain
+    http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(jwtFilter, LoginFilter.class)
         .addFilterBefore(jwtExceptionFilter, JwtFilter.class);
 
     return http.build();
