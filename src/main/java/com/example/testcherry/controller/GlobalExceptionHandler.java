@@ -1,9 +1,11 @@
 package com.example.testcherry.controller;
 
 import com.example.testcherry.exception.ForbiddenException;
+import com.example.testcherry.exception.InvalidJwtException;
 import com.example.testcherry.exception.MemberAlreadyExistsException;
 import com.example.testcherry.exception.MemberNotFoundException;
 import com.example.testcherry.model.entity.Response;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -14,6 +16,18 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+  @ExceptionHandler(InvalidJwtException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public Response<Void> handleInvalidJwtException(InvalidJwtException e) {
+    return Response.fail(HttpStatus.BAD_REQUEST, e.getMessage());
+  }
+
+  @ExceptionHandler(ExpiredJwtException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public Response<Void> handleExpiredJwtException(ExpiredJwtException e) {
+    return Response.fail(HttpStatus.BAD_REQUEST, "expired jwt token");
+  }
 
   @ExceptionHandler(MemberAlreadyExistsException.class)
   @ResponseStatus(HttpStatus.CONFLICT)

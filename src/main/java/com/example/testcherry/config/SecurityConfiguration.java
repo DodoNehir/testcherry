@@ -100,6 +100,8 @@ public class SecurityConfiguration {
             .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**")
             .permitAll()
 
+            .requestMatchers("/reissue").permitAll()
+
             // member C: permitAll, R: ADMIN, UD: MEMBER
             .requestMatchers("/members/join", "/members/login").permitAll()
             .requestMatchers("/members/**").hasAnyRole("MEMBER")
