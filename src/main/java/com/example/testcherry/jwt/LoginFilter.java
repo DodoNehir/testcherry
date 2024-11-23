@@ -1,7 +1,9 @@
 package com.example.testcherry.jwt;
 
+import com.example.testcherry.model.entity.Refresh;
 import com.example.testcherry.model.member.LoginRequestBody;
 import com.example.testcherry.model.member.UserDetailsImpl;
+import com.example.testcherry.repository.RefreshReposiotry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,10 +29,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
   private final AuthenticationManager authenticationManager;
   private final JwtUtil jwtUtil;
+  private final RefreshReposiotry refreshReposiotry;
 
-  public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+  public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, RefreshReposiotry refreshReposiotry) {
     this.authenticationManager = authenticationManager;
     this.jwtUtil = jwtUtil;
+    this.refreshReposiotry = refreshReposiotry;
   }
 
   @Override
@@ -76,6 +81,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     String accessToken = jwtUtil.generateToken("access", username, role, 60 * 60 * 1000L);
     String refreshToken = jwtUtil.generateToken("refresh", username, role, 24 * 60 * 60 * 1000L);
 
+    saveRefreshEntity(username, refreshToken, 24 * 60 * 60 * 1000L);
+
     response.addHeader("access", accessToken);
     response.addCookie(createCookie("refresh", refreshToken));
     response.setStatus(HttpStatus.OK.value());
@@ -96,6 +103,17 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 //    cookie.setPath("/"); // 쿠키가 적용될 범위
     cookie.setHttpOnly(true);
     return cookie;
+  }
+
+  private void saveRefreshEntity(String username, String refresh, Long expiredMs) {
+    Date date = new Date(System.currentTimeMillis() + expiredMs);
+
+    Refresh refreshEntity = new Refresh();
+    refreshEntity.setUsername(username);
+    refreshEntity.setRefreshToken(refresh);
+    refreshEntity.setExpiration(String.valueOf(date));
+
+    refreshReposiotry.save(refreshEntity);
   }
 
 }

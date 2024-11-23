@@ -5,6 +5,7 @@ import com.example.testcherry.jwt.JwtFilter;
 import com.example.testcherry.jwt.JwtUtil;
 import com.example.testcherry.jwt.LoginFilter;
 import com.example.testcherry.model.member.Role;
+import com.example.testcherry.repository.RefreshReposiotry;
 import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -35,16 +36,19 @@ public class SecurityConfiguration {
   private final JwtExceptionFilter jwtExceptionFilter;
   private final AuthenticationConfiguration authenticationConfiguration;
   private final JwtUtil jwtUtil;
+  private final RefreshReposiotry refreshReposiotry;
 
   public SecurityConfiguration(
       JwtFilter jwtFilter,
       JwtExceptionFilter jwtExceptionFilter,
       AuthenticationConfiguration authenticationConfiguration,
-      JwtUtil jwtUtil) {
+      JwtUtil jwtUtil,
+      RefreshReposiotry refreshReposiotry) {
     this.jwtFilter = jwtFilter;
     this.jwtExceptionFilter = jwtExceptionFilter;
     this.authenticationConfiguration = authenticationConfiguration;
     this.jwtUtil = jwtUtil;
+    this.refreshReposiotry = refreshReposiotry;
   }
 
   @Bean
@@ -120,7 +124,7 @@ public class SecurityConfiguration {
 
     // login filter
     LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration),
-        jwtUtil);
+        jwtUtil, refreshReposiotry);
     loginFilter.setFilterProcessesUrl("/members/login");
 
     // filter chain
