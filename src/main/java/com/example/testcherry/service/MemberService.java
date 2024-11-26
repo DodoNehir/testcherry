@@ -1,12 +1,18 @@
 package com.example.testcherry.service;
 
 import com.example.testcherry.exception.ForbiddenException;
+import com.example.testcherry.exception.InvalidJwtException;
 import com.example.testcherry.exception.MemberAlreadyExistsException;
 import com.example.testcherry.exception.MemberNotFoundException;
+import com.example.testcherry.jwt.JwtUtil;
 import com.example.testcherry.model.dto.MemberDto;
 import com.example.testcherry.model.entity.Member;
 import com.example.testcherry.model.member.MemberDeleteRequest;
 import com.example.testcherry.repository.MemberRepository;
+import com.example.testcherry.repository.RefreshReposiotry;
+import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,11 +24,16 @@ public class MemberService {
   private static final Logger logger = LoggerFactory.getLogger(MemberService.class);
   private final MemberRepository memberRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
+  private final JwtUtil jwtUtil;
+  private final RefreshReposiotry refreshReposiotry;
 
   public MemberService(MemberRepository memberRepository,
-      BCryptPasswordEncoder bCryptPasswordEncoder) {
+      BCryptPasswordEncoder bCryptPasswordEncoder, JwtUtil jwtUtil,
+      RefreshReposiotry refreshReposiotry) {
     this.memberRepository = memberRepository;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    this.jwtUtil = jwtUtil;
+    this.refreshReposiotry = refreshReposiotry;
   }
 
 
@@ -72,6 +83,42 @@ public class MemberService {
     } else {
       throw new ForbiddenException();
     }
+  }
+
+  public void logout(String refreshToken, HttpServletResponse response) {
+    logger.info("Logout token: {}", refreshToken);
+    // null check
+    if (refreshToken == null) {
+      throw new InvalidJwtException("refresh");
+    }
+
+    // expire check
+    try {
+      jwtUtil.isExpired(refreshToken);
+    } catch (ExpiredJwtException e) {
+      throw e;
+    }
+
+    // category refresh check
+    String category = jwtUtil.getCategory(refreshToken);
+    if (!category.equals("refresh")) {
+      throw new InvalidJwtException("refresh");
+    }
+
+    // DB check
+    boolean exists = refreshReposiotry.existsByRefreshToken(refreshToken);
+    if (!exists) {
+      throw new InvalidJwtException("refresh");
+    }
+
+    // delete from DB
+    refreshReposiotry.deleteByRefreshToken(refreshToken);
+
+    // set refresh token null
+    Cookie cookie = new Cookie("refresh", null);
+    cookie.setMaxAge(0);
+    cookie.setPath("/");
+    response.addCookie(cookie);
   }
 
 //  public void login(LoginRequestBody loginRequestBody) {

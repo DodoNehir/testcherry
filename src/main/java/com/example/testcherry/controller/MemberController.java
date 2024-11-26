@@ -8,8 +8,10 @@ import com.example.testcherry.model.member.UserDetailsImpl;
 import com.example.testcherry.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -35,6 +37,13 @@ public class MemberController {
   public Response<String> join(@Valid @RequestBody MemberDto memberDto) {
     String newMemberUsername = memberService.join(memberDto);
     return Response.success(newMemberUsername);
+  }
+
+  @Operation(summary = "로그아웃")
+  @PostMapping("/logout")
+  public Response<String> logout(@CookieValue("refresh") String refresh, HttpServletResponse response) {
+    memberService.logout(refresh, response);
+    return Response.success("logout successful");
   }
 
 //  @Operation(summary = "인증", description = "가입된 멤버가 맞는 지 확인합니다.")
