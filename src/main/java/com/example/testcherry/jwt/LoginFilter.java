@@ -31,7 +31,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
   private final JwtUtil jwtUtil;
   private final RefreshReposiotry refreshReposiotry;
 
-  public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil, RefreshReposiotry refreshReposiotry) {
+  public LoginFilter(AuthenticationManager authenticationManager, JwtUtil jwtUtil,
+      RefreshReposiotry refreshReposiotry) {
     this.authenticationManager = authenticationManager;
     this.jwtUtil = jwtUtil;
     this.refreshReposiotry = refreshReposiotry;
@@ -99,7 +100,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
   private Cookie createCookie(String key, String value) {
     Cookie cookie = new Cookie(key, value);
     cookie.setMaxAge(24 * 60 * 60);
-//    cookie.setSecure(true); // HTTPS
+    cookie.setSecure(true); // HTTPS
 //    cookie.setPath("/"); // 쿠키가 적용될 범위
     cookie.setHttpOnly(true);
     return cookie;

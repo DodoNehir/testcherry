@@ -37,7 +37,7 @@ spring:
 
 logging:
   level:
-    root: debug
+    root: info
 #    org.hibernate.sql: debug
 #    org.hibernate.type: debug
 #    org.springframework.orm.jpa: debug
@@ -48,3 +48,16 @@ jwt:
 
 springdoc:
   show-login-endpoint: true
+
+#management:
+#  endpoint:
+#    health:
+#      show-details: always
+
+server:
+  ssl:
+    enabled: true
+    key-store: src/main/resources/mykeystore.p12
+    key-store-password: ${SSL_PASSWORD}
+    key-store-type: PKCS12
+    key-alias: myalias
