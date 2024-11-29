@@ -49,10 +49,10 @@ jwt:
 springdoc:
   show-login-endpoint: true
 
-#management:
-#  endpoint:
-#    health:
-#      show-details: always
+management:
+  endpoint:
+    health:
+      show-details: always
 
 server:
   ssl:

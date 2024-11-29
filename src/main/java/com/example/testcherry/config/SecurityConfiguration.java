@@ -31,7 +31,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 public class SecurityConfiguration {
 
   private final JwtFilter jwtFilter;
@@ -108,6 +108,7 @@ public class SecurityConfiguration {
             .permitAll()
 
             .requestMatchers("/reissue").permitAll()
+            .requestMatchers("/actuator/**").permitAll()
 
             // member C: permitAll, R: ADMIN, UD: MEMBER
             .requestMatchers("/members/join", "/members/login").permitAll()
