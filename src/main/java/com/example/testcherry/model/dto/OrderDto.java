@@ -17,7 +17,9 @@ public record OrderDto(
     LocalDateTime orderDate,
 
     @NotEmpty(message = "주문 정보를 입력해주세요")
-    Set<OrderItemDto> orderItemDtoSet
+    Set<OrderItemDto> orderItemDtoSet,
+
+    boolean isCanceled
 ) {
 
   // entity 에서 dto 로 변환
@@ -32,7 +34,8 @@ public record OrderDto(
     return new OrderDto(
         MemberDto.from(order.getMember()),
         order.getOrderDate(),
-        orderItemDtoSet
+        orderItemDtoSet,
+        order.isCanceled()
     );
   }
 

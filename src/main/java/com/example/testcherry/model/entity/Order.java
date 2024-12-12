@@ -28,7 +28,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "ORDERS",
-    indexes = {@Index(name = "orders_member_id_idx", columnList = "member_id")})
+    indexes = {@Index(name = "orders_username_idx", columnList = "username")})
 public class Order {
 
   @Id
@@ -36,13 +36,15 @@ public class Order {
   private Long orderId;
 
   @ManyToOne
-  @JoinColumn(name = "member_id")
+  @JoinColumn(name = "username")
   private Member member;
 
   private LocalDateTime orderDate;
 
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
   private List<OrderItem> orderItems;
+
+  private boolean isCanceled;
 
 
   public Order(Member member, LocalDateTime orderDate, List<OrderItem> orderItems) {
@@ -68,6 +70,7 @@ public class Order {
   @PrePersist
   public void prePersist() {
     orderDate = LocalDateTime.now();
+    isCanceled = false;
   }
 
 }

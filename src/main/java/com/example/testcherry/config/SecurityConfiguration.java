@@ -122,6 +122,7 @@ public class SecurityConfiguration {
             // order CRUD: MEMBER
             // Order 권한 에러는 로그인/가입 할 수 있도록 Redirect
             .requestMatchers("/orders").hasAnyRole("MEMBER")
+            .requestMatchers(HttpMethod.PATCH, "/orders/**").hasAnyRole("ADMIN")
 
             // 모든 request에 대해
             .anyRequest().authenticated());

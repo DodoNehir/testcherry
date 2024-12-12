@@ -1,5 +1,6 @@
 package com.example.testcherry.service;
 
+import com.example.testcherry.exception.OrderNotFoundException;
 import com.example.testcherry.exception.OutOfStockException;
 import com.example.testcherry.model.dto.OrderDto;
 import com.example.testcherry.model.dto.OrderItemDto;
@@ -73,5 +74,23 @@ public class OrderService {
 //    return new OrderResponseBody(responseBodySet);
   }
 
+  public List<OrderDto> getAllOrders(String username) {
+    List<Order> orders = orderRepository.findByMemberUsername(username);
+    List<OrderDto> orderDtos = new ArrayList<>();
 
+    for (Order order : orders) {
+      orderDtos.add(OrderDto.from(order));
+    }
+    return orderDtos;
+  }
+
+  public OrderDto cancelOrder(Long orderId) {
+    Order order = orderRepository.findById(orderId)
+        .orElseThrow(() -> new OrderNotFoundException(orderId));
+
+    order.setCanceled(true);
+
+    orderRepository.save(order);
+    return OrderDto.from(order);
+  }
 }
