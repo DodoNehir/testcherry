@@ -1,0 +1,63 @@
+spring:
+
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;
+    username: sa
+    password:
+
+  h2:
+    console:
+      enabled: true
+
+  sql:
+    init:
+      mode: never
+
+  jpa:
+    show-sql: true
+#    database: postgresql
+    database: h2
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+
+  security:
+    user:
+      name: user
+      password: my-password
+
+
+#  thymeleaf:
+#    prefix: classpath:templates/
+#    suffix: .html
+
+logging:
+  level:
+    root: info
+#    org.hibernate.sql: debug
+#    org.hibernate.type: debug
+#    org.springframework.orm.jpa: debug
+#    org.springframework.transaction: debug
+
+jwt:
+  secret-key: hjfhjhsdhfiauihirye98782748u3oirahdkjhskjhhdjkfjsk
+
+springdoc:
+  show-login-endpoint: true
+
+management:
+  endpoint:
+    health:
+      show-details: always
+
+server:
+  ssl:
+    enabled: true
+    key-store: src/main/resources/mykeystore.p12
+    key-store-password: qwerty1234
+    key-store-type: PKCS12
+    key-alias: myalias
