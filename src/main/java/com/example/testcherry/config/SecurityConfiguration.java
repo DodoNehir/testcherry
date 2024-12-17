@@ -1,5 +1,6 @@
 package com.example.testcherry.config;
 
+import com.example.testcherry.handler.CustomAccessDeniedHandler;
 import com.example.testcherry.jwt.JwtExceptionFilter;
 import com.example.testcherry.jwt.JwtFilter;
 import com.example.testcherry.jwt.JwtUtil;
@@ -39,18 +40,21 @@ public class SecurityConfiguration {
   private final AuthenticationConfiguration authenticationConfiguration;
   private final JwtUtil jwtUtil;
   private final RefreshReposiotry refreshReposiotry;
+  private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
   public SecurityConfiguration(
       JwtFilter jwtFilter,
       JwtExceptionFilter jwtExceptionFilter,
       AuthenticationConfiguration authenticationConfiguration,
       JwtUtil jwtUtil,
-      RefreshReposiotry refreshReposiotry) {
+      RefreshReposiotry refreshReposiotry,
+      CustomAccessDeniedHandler customAccessDeniedHandler) {
     this.jwtFilter = jwtFilter;
     this.jwtExceptionFilter = jwtExceptionFilter;
     this.authenticationConfiguration = authenticationConfiguration;
     this.jwtUtil = jwtUtil;
     this.refreshReposiotry = refreshReposiotry;
+    this.customAccessDeniedHandler = customAccessDeniedHandler;
   }
 
   @Bean
@@ -110,19 +114,21 @@ public class SecurityConfiguration {
             .requestMatchers("/reissue").permitAll()
             .requestMatchers("/actuator/**").permitAll()
 
-            // member C: permitAll, R: ADMIN, UD: MEMBER
-            .requestMatchers("/members/join", "/members/login").permitAll()
-            .requestMatchers("/members/**").hasAnyRole("MEMBER")
+            // members
             .requestMatchers(HttpMethod.GET, "/members/**").hasAnyRole("ADMIN")
+            .requestMatchers("/members/**").hasAnyRole("MEMBER")
+            .requestMatchers("/members/join", "/members/login").permitAll()
 
-            // product R: Permit All, CUD: ADMIN
+            // products
+            .requestMatchers(HttpMethod.POST, "/products").hasAnyRole("ADMIN")
+            .requestMatchers(HttpMethod.PATCH, "/products/**").hasAnyRole("ADMIN")
+            .requestMatchers(HttpMethod.DELETE, "/products/**").hasAnyRole("ADMIN")
             .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
-            .requestMatchers("/products", "/products/**").hasAnyRole("ADMIN")
 
-            // order CRUD: MEMBER
-            // Order 권한 에러는 로그인/가입 할 수 있도록 Redirect
-            .requestMatchers("/orders").hasAnyRole("MEMBER")
-            .requestMatchers(HttpMethod.PATCH, "/orders/**").hasAnyRole("ADMIN")
+            // orders
+            .requestMatchers(HttpMethod.PATCH, "/orders").hasAnyRole("ADMIN")
+            .requestMatchers(HttpMethod.POST, "/orders").hasAnyRole("MEMBER")
+            .requestMatchers(HttpMethod.GET, "/orders").hasAnyRole("MEMBER")
 
             // 모든 request에 대해
             .anyRequest().authenticated());
@@ -136,6 +142,10 @@ public class SecurityConfiguration {
     http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(jwtFilter, LoginFilter.class)
         .addFilterBefore(jwtExceptionFilter, JwtFilter.class);
+
+    // handler
+    http.exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
+        httpSecurityExceptionHandlingConfigurer.accessDeniedHandler(customAccessDeniedHandler));
 
     return http.build();
   }
