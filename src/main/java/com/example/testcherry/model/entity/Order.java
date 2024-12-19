@@ -4,6 +4,7 @@ import com.example.testcherry.model.dto.OrderDto;
 import com.example.testcherry.model.dto.OrderItemDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -35,17 +36,20 @@ public class Order {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long orderId;
 
-  @ManyToOne
-  @JoinColumn(name = "username")
+  @ManyToOne(optional = false)
+  @JoinColumn(name = "member_id", nullable = false)
   private Member member;
 
   private LocalDateTime orderDate;
 
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-  private List<OrderItem> orderItems;
+  private List<OrderItem> orderItems = new ArrayList<>();
 
   private boolean isCanceled;
 
+  public Order(Member member) {
+    this.member = member;
+  }
 
   public Order(Member member, LocalDateTime orderDate, List<OrderItem> orderItems) {
     this.member = member;
@@ -53,18 +57,9 @@ public class Order {
     this.orderItems = orderItems;
   }
 
-  // dto 에서 entity 로 변환
-  public static Order of(OrderDto orderDto) {
-    List<OrderItem> orderItems = new ArrayList<>();
 
-    for (OrderItemDto entry : orderDto.orderItemDtoSet()) {
-      orderItems.add(OrderItem.of(entry));
-    }
-
-    return new Order(
-        Member.of(orderDto.memberDto()),
-        orderDto.orderDate(),
-        orderItems);
+  public void addOrderItem(OrderItem orderItem) {
+    orderItems.add(orderItem);
   }
 
   @PrePersist

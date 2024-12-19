@@ -72,12 +72,11 @@ public class Member {
     this.active = true;
   }
 
-  public static Member of(MemberDto memberDto) {
-    return new Member(memberDto.username(),
-        memberDto.password(),
-        memberDto.address(),
-        memberDto.phoneNumber());
-  }
+//  public static Member of(MemberDto memberDto) {
+//    return new Member(memberDto.username(),
+//        memberDto.address(),
+//        memberDto.phoneNumber());
+//  }
 
   @PrePersist
   public void prePersist() {

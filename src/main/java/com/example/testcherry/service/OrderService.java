@@ -3,8 +3,6 @@ package com.example.testcherry.service;
 import com.example.testcherry.exception.OrderNotFoundException;
 import com.example.testcherry.exception.OutOfStockException;
 import com.example.testcherry.model.dto.OrderDto;
-import com.example.testcherry.model.dto.OrderItemDto;
-import com.example.testcherry.model.dto.ProductDto;
 import com.example.testcherry.model.entity.Member;
 import com.example.testcherry.model.entity.Order;
 import com.example.testcherry.model.entity.OrderItem;
@@ -38,13 +36,13 @@ public class OrderService {
     this.productService = productService;
   }
 
-  //  public OrderResponseBody newOrder(OrderRequestBody orderRequestBody, Member member) {
-  public OrderDto newOrder(OrderRequestBody orderRequestBody, Member member) {
+  //  public OrderResponseBody createOrder(OrderRequestBody orderRequestBody, Member member) {
+  public OrderDto createOrder(OrderRequestBody orderRequestBody, Member member) {
 
-    logger.info("New Order");
-    List<OrderItem> orderItems = new ArrayList<>();
+    logger.info("Create Order");
 
 //    Set<OrderItemResponseBody> responseBodySet = new HashSet<>();
+    Order order = new Order(member);
 
     for (OrderItemRequestBody entry : orderRequestBody.orderItemRequestBodySet()) {
       Long productId = entry.productId();
@@ -57,19 +55,21 @@ public class OrderService {
 
       product.adjustStockMinus(buyQuantity);
 
-      OrderItem orderItem = OrderItem.of(new OrderItemDto(
-          ProductDto.from(product),
-          buyQuantity
-      ));
+      OrderItem orderItem = new OrderItem(product, buyQuantity);
+
+      // DB 의 N 쪽이 주인이 된다. (N 쪽이 FK)
+      // 관계의 주인인 orderItem 이 order 를 수정하는 코드를 작성해야 한다.
+      // 두 객체에 모두 명시적으로 반영
+      orderItem.setOrder(order);
+      order.addOrderItem(orderItem);
 
       orderItemRepository.save(orderItem);
-      orderItems.add(orderItem);
-
 //      responseBodySet.add(new OrderItemResponseBody(productId, buyQuantity));
     }
 
-    Order order = new Order(member, LocalDateTime.now(), orderItems);
+    // 다시 order에 orderItem을 저장
     orderRepository.save(order);
+
     return OrderDto.from(order);
 //    return new OrderResponseBody(responseBodySet);
   }

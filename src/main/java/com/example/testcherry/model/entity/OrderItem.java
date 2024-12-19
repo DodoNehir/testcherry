@@ -3,12 +3,11 @@ package com.example.testcherry.model.entity;
 import com.example.testcherry.model.dto.OrderItemDto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -27,13 +26,15 @@ public class OrderItem {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long orderItemId;
 
-  @OneToOne(cascade = CascadeType.ALL)
+  @ManyToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "product_id", nullable = false)
   private Product product;
 
   @NotNull
   private Integer orderQuantity;
 
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "order_id", nullable = false)
   private Order order;
 
   public OrderItem(Product product, Integer orderQuantity) {
@@ -41,12 +42,12 @@ public class OrderItem {
     this.orderQuantity = orderQuantity;
   }
 
-  public static OrderItem of(OrderItemDto orderItemDto) {
-    return new OrderItem(
-        Product.of(orderItemDto.productDto()),
-        orderItemDto.orderQuantity()
-    );
-  }
+//  public static OrderItem of(OrderItemDto orderItemDto) {
+//    return new OrderItem(
+//        Product.of(orderItemDto.productDto()),
+//        orderItemDto.orderQuantity()
+//    );
+//  }
 
 
 }

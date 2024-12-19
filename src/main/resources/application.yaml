@@ -1,14 +1,14 @@
 spring:
 
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb;
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/cherry
     username: ${MY_DB_NAME}
     password: ${MY_DB_PASSWORD}
 
-  h2:
-    console:
-      enabled: true
+#  h2:
+#    console:
+#      enabled: true
 
   sql:
     init:
@@ -17,7 +17,8 @@ spring:
   jpa:
     show-sql: true
 #    database: postgresql
-    database: h2
+#    database: h2
+    database: mysql
     defer-datasource-initialization: true
     hibernate:
       ddl-auto: create

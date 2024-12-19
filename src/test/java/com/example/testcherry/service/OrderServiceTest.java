@@ -68,7 +68,7 @@ class OrderServiceTest {
     when(productService.checkStock(3L)).thenReturn(product3);
 
     // when
-    orderService.newOrder(orderRequestBody, member);
+    orderService.createOrder(orderRequestBody, member);
 
     // then
     assertThat(product1.getQuantity()).isEqualTo(stockQuantity - buyQuantity);
@@ -105,7 +105,7 @@ class OrderServiceTest {
 
     // when & then
 //    OutOfStockException outOfStockException =
-    assertThrows(OutOfStockException.class, () -> orderService.newOrder(orderRequestBody, member));
+    assertThrows(OutOfStockException.class, () -> orderService.createOrder(orderRequestBody, member));
 
 //    assertThat(runtimeException.getMessage()).isEqualTo("product id " + 1L + " is out of stock");
   }

@@ -15,7 +15,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,7 +47,7 @@ public class OrderController {
     // TODO member를 여기서 넣지 않고 orderService에서 엔티티를 조회하도록 변경
     Member member = memberService.findMemberByUsername(userDetails.getUsername());
 
-    OrderDto orderResponseBody = orderService.newOrder(orderRequestBody, member);
+    OrderDto orderResponseBody = orderService.createOrder(orderRequestBody, member);
     return Response.success(orderResponseBody);
   }
 
