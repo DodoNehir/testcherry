@@ -7,8 +7,6 @@ import com.example.testcherry.jwt.JwtUtil;
 import com.example.testcherry.jwt.LoginFilter;
 import com.example.testcherry.repository.RefreshReposiotry;
 import java.util.List;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,7 +17,6 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
@@ -111,13 +108,16 @@ public class SecurityConfiguration {
             .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**")
             .permitAll()
 
-            .requestMatchers("/reissue").permitAll()
-            .requestMatchers("/actuator/**").permitAll()
+            .requestMatchers(HttpMethod.POST, "/reissue").hasAnyRole("MEMBER")
+
+            .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
 
             // members
             .requestMatchers(HttpMethod.GET, "/members/**").hasAnyRole("ADMIN")
-            .requestMatchers("/members/**").hasAnyRole("MEMBER")
-            .requestMatchers("/members/join", "/members/login").permitAll()
+            .requestMatchers(HttpMethod.POST, "/members/logout").hasAnyRole("MEMBER")
+            .requestMatchers(HttpMethod.PATCH, "/members/**").hasAnyRole("MEMBER")
+            .requestMatchers(HttpMethod.DELETE, "/members/**").hasAnyRole("MEMBER")
+            .requestMatchers(HttpMethod.POST, "/members/join", "/members/login").permitAll()
 
             // products
             .requestMatchers(HttpMethod.POST, "/products").hasAnyRole("ADMIN")
