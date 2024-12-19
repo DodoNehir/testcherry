@@ -41,7 +41,7 @@ public class MemberController {
 
   @Operation(summary = "로그아웃")
   @PostMapping("/logout")
-  public Response<String> logout(@CookieValue("refresh") String refresh, HttpServletResponse response) {
+  public Response<String> logout(@CookieValue("refreshToken") String refresh, HttpServletResponse response) {
     memberService.logout(refresh, response);
     return Response.success("logout successful");
   }

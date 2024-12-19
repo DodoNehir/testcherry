@@ -5,6 +5,7 @@ import com.example.testcherry.repository.RefreshReposiotry;
 import com.example.testcherry.service.ReissueService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,9 +22,8 @@ public class ReissueController {
   private final RefreshReposiotry refreshReposiotry;
 
   @PostMapping("/reissue")
-  public Response<Void> reissue(HttpServletRequest request, HttpServletResponse response) {
-    response = reissueService.reissueAccessToken(request, response);
-
-    return Response.success(null);
+  public void reissue(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    reissueService.reissueAccessToken(request, response);
   }
 }

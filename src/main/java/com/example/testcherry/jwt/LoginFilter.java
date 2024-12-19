@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletInputStream;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -84,8 +83,11 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     saveRefreshEntity(username, refreshToken, 24 * 60 * 60 * 1000L);
 
-    response.addHeader("access", accessToken);
-    response.addCookie(createCookie("refresh", refreshToken));
+    // User Agent 에 따라 응답 바꾸기
+    String userAgent = request.getHeader("User-Agent");
+
+    jwtUtil.setTokensInResponse(response, accessToken, refreshToken, userAgent);
+
     response.setStatus(HttpStatus.OK.value());
   }
 
@@ -94,16 +96,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
       HttpServletResponse response, AuthenticationException failed)
       throws IOException, ServletException {
     //로그인 실패시 401 응답 코드 반환
+    response.getWriter().write("login failed: " + failed.getMessage());
     response.setStatus(401);
-  }
-
-  private Cookie createCookie(String key, String value) {
-    Cookie cookie = new Cookie(key, value);
-    cookie.setMaxAge(24 * 60 * 60);
-    cookie.setSecure(true); // HTTPS
-//    cookie.setPath("/"); // 쿠키가 적용될 범위
-    cookie.setHttpOnly(true);
-    return cookie;
   }
 
   private void saveRefreshEntity(String username, String refresh, Long expiredMs) {

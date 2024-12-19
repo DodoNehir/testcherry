@@ -29,17 +29,18 @@ public class JwtFilter extends OncePerRequestFilter {
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
 
-    String accessToken = request.getHeader("access");
+    String bearerToken = request.getHeader("Authorization");
 
-    // 토큰 없으면 다음 필터로
-    if (accessToken == null) {
-//        || !accessToken.startsWith("Bearer ")) {
+    // 토큰 없거나 Bearer 토큰이 아니면 다음 필터로
+    if (bearerToken == null || !bearerToken.toLowerCase().startsWith("bearer ")) {
 
       filterChain.doFilter(request, response);
       return;
     }
 
-    // token expired 면 401 응답
+    String accessToken  = bearerToken.substring(7);
+
+    // expired 체크
     try {
       jwtUtil.isExpired(accessToken);
     } catch (ExpiredJwtException e) {
@@ -49,9 +50,8 @@ public class JwtFilter extends OncePerRequestFilter {
       return;
     }
 
+    // 카테고리 access 인지 체크
     String category = jwtUtil.getCategory(accessToken);
-
-    // access token 아니면 401 응답
     if (!category.equals("access")) {
       PrintWriter writer = response.getWriter();
       writer.println("invalid access token");
@@ -66,7 +66,6 @@ public class JwtFilter extends OncePerRequestFilter {
     Member member = new Member(username, role);
 
     UserDetailsImpl userDetails = new UserDetailsImpl(member);
-//    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
     // controller단에서 인증 정보를 사용할 수 있도록 SecurityContext에 인증 설정
     Authentication authenticationToken = new UsernamePasswordAuthenticationToken(

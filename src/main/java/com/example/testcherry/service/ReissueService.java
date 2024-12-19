@@ -8,6 +8,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,63 +20,54 @@ public class ReissueService {
   private final JwtUtil jwtUtil;
   private final RefreshReposiotry refreshReposiotry;
 
-  public HttpServletResponse reissueAccessToken(HttpServletRequest request, HttpServletResponse response) {
+  public void reissueAccessToken(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
 
-    String refresh = null;
+    String refreshToken = null;
     Cookie[] cookies = request.getCookies();
     for (Cookie cookie : cookies) {
-      if (cookie.getName().equals("refresh")) {
-        refresh = cookie.getValue();
+      if (cookie.getName().equals("refreshToken")) {
+        refreshToken = cookie.getValue();
       }
     }
 
-    if (refresh == null) {
+    if (refreshToken == null) {
       throw new InvalidJwtException("refresh");
     }
 
     // expired 확인
     try {
-      jwtUtil.isExpired(refresh);
+      jwtUtil.isExpired(refreshToken);
     } catch (ExpiredJwtException e) {
       throw e;
     }
 
-    // refresh 확인
-    String category = jwtUtil.getCategory(refresh);
+    // refresh 카테고리 확인
+    String category = jwtUtil.getCategory(refreshToken);
     if (!category.equals("refresh")) {
       throw new InvalidJwtException("refresh");
     }
 
     // 저장되어 있는 refresh 확인
-    boolean exists = refreshReposiotry.existsByRefreshToken(refresh);
+    boolean exists = refreshReposiotry.existsByRefreshToken(refreshToken);
     if (!exists) {
       throw new InvalidJwtException("refresh");
     }
 
     // 새로운 토큰 생성
-    String username = jwtUtil.getUsername(refresh);
-    String role = jwtUtil.getRole(refresh);
+    String username = jwtUtil.getUsername(refreshToken);
+    String role = jwtUtil.getRole(refreshToken);
 
     String newAccessToken = jwtUtil.generateToken("access", username, role, 60 * 60 * 1000L);
     String newRefreshToken = jwtUtil.generateToken("refresh", username, role, 24 * 60 * 60 * 1000L);
 
     // 기존 refresh 토큰 삭제 & 새로운 refresh 토큰 추가
-    refreshReposiotry.deleteByRefreshToken(refresh);
+    refreshReposiotry.deleteByRefreshToken(refreshToken);
     saveRefreshEntity(username, newRefreshToken, 24 * 60 * 60 * 1000L);
 
-    response.setHeader("access", newAccessToken);
-    response.addCookie(createCookie("refresh", newRefreshToken));
+    String userAgent = request.getHeader("User-Agent");
 
-    return response;
-  }
-
-  private Cookie createCookie(String key, String value) {
-    Cookie cookie = new Cookie(key, value);
-    cookie.setMaxAge(24 * 60 * 60);
-    cookie.setSecure(true); // HTTPS
-//    cookie.setPath("/"); // 쿠키가 적용될 범위
-    cookie.setHttpOnly(true);
-    return cookie;
+    jwtUtil.setTokensInResponse(response, newAccessToken, newRefreshToken, userAgent);
   }
 
   private void saveRefreshEntity(String username, String refresh, Long expiredMs) {

@@ -1,9 +1,15 @@
 package com.example.testcherry.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import org.slf4j.Logger;
@@ -24,13 +30,26 @@ public class JwtUtil {
 //    this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
   }
 
-//  public String generateAccessToken(UserDetails userDetails) {
-//    return generateToken(userDetails.getUsername());
-//  }
+  public void setTokensInResponse(HttpServletResponse response,
+      String accessToken, String refreshToken, String userAgent) throws IOException {
+    // accessToken 을 Json 으로 전송하는 것은 동일
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
 
-//  public String getUsername(String accessToken) {
-//    return getSubject(accessToken);
-//  }
+    Map<String, String> tokens = new HashMap<>();
+    tokens.put("accessToken", accessToken);
+
+    if (isMobileRequest(userAgent)) {
+      // 모바일 요청은 refresh 도 json 에 포함하여 응답
+      tokens.put("refreshToken", refreshToken);
+    } else {
+      // 웹 요청은 refresh 를 쿠키에 담아서 응답
+      response.addCookie(createCookie("refreshToken", refreshToken));
+    }
+
+    ObjectMapper objectMapper = new ObjectMapper();
+    response.getWriter().write(objectMapper.writeValueAsString(tokens));
+  }
 
   public String generateToken(String category, String username, String role, Long expiration) {
     // refresh를 들고 오면 access 사용 불가하도록
@@ -88,4 +107,18 @@ public class JwtUtil {
     }
   }
 
+  private boolean isMobileRequest(String userAgent) {
+    return userAgent != null &&
+        (userAgent.toLowerCase().contains("android")
+            || userAgent.toLowerCase().contains("iphone"));
+  }
+
+  private Cookie createCookie(String key, String value) {
+    Cookie cookie = new Cookie(key, value);
+    cookie.setMaxAge(24 * 60 * 60);
+    cookie.setSecure(true); // HTTPS
+    cookie.setPath("/"); // 쿠키가 적용될 범위
+    cookie.setHttpOnly(true);
+    return cookie;
+  }
 }
