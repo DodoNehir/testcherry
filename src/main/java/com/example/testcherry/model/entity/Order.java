@@ -42,7 +42,7 @@ public class Order {
 
   private LocalDateTime orderDate;
 
-  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<OrderItem> orderItems = new ArrayList<>();
 
   private boolean isCanceled;
@@ -59,7 +59,8 @@ public class Order {
 
 
   public void addOrderItem(OrderItem orderItem) {
-    orderItems.add(orderItem);
+    this.orderItems.add(orderItem);
+    orderItem.setOrder(this); // 양방향 연관관계 설정
   }
 
   @PrePersist

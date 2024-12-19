@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import com.example.testcherry.exception.OutOfStockException;
 import com.example.testcherry.model.entity.Member;
 import com.example.testcherry.model.entity.Product;
+import com.example.testcherry.model.member.UserDetailsImpl;
 import com.example.testcherry.model.order.OrderRequestBody;
 import com.example.testcherry.model.order_item.OrderItemRequestBody;
 import com.example.testcherry.repository.MemberRepository;
@@ -46,6 +47,7 @@ class OrderServiceTest {
     // given
     Member member = new Member("qwerty", "qwerty", "qwerty", "qwerty");
     memberRepository.save(member);
+    UserDetailsImpl userDetails = new UserDetailsImpl(member);
 
     Integer stockQuantity = 100;
     Integer buyQuantity = 30;
@@ -68,7 +70,7 @@ class OrderServiceTest {
     when(productService.checkStock(3L)).thenReturn(product3);
 
     // when
-    orderService.createOrder(orderRequestBody, member);
+    orderService.createOrder(orderRequestBody, userDetails);
 
     // then
     assertThat(product1.getQuantity()).isEqualTo(stockQuantity - buyQuantity);
@@ -83,6 +85,7 @@ class OrderServiceTest {
     // given
     Member member = new Member("qwerty", "qwerty", "qwerty", "qwerty");
     memberRepository.save(member);
+    UserDetailsImpl userDetails = new UserDetailsImpl(member);
 
     Integer stockQuantity = 10;
     Integer buyQuantity = 30;
@@ -105,7 +108,7 @@ class OrderServiceTest {
 
     // when & then
 //    OutOfStockException outOfStockException =
-    assertThrows(OutOfStockException.class, () -> orderService.createOrder(orderRequestBody, member));
+    assertThrows(OutOfStockException.class, () -> orderService.createOrder(orderRequestBody, userDetails));
 
 //    assertThat(runtimeException.getMessage()).isEqualTo("product id " + 1L + " is out of stock");
   }

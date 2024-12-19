@@ -42,12 +42,8 @@ public class OrderController {
       Authentication authentication) {
 
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-    logger.info("로그인한 유저의 Username: " + userDetails.getUsername());
-
-    // TODO member를 여기서 넣지 않고 orderService에서 엔티티를 조회하도록 변경
-    Member member = memberService.findMemberByUsername(userDetails.getUsername());
-
-    OrderDto orderResponseBody = orderService.createOrder(orderRequestBody, member);
+//    logger.info("로그인한 유저의 Username: " + userDetails.getUsername());
+    OrderDto orderResponseBody = orderService.createOrder(orderRequestBody, userDetails);
     return Response.success(orderResponseBody);
   }
 

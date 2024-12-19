@@ -7,11 +7,11 @@ import com.example.testcherry.model.entity.Member;
 import com.example.testcherry.model.entity.Order;
 import com.example.testcherry.model.entity.OrderItem;
 import com.example.testcherry.model.entity.Product;
+import com.example.testcherry.model.member.UserDetailsImpl;
 import com.example.testcherry.model.order.OrderRequestBody;
 import com.example.testcherry.model.order_item.OrderItemRequestBody;
 import com.example.testcherry.repository.OrderItemRepository;
 import com.example.testcherry.repository.OrderRepository;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -27,47 +27,31 @@ public class OrderService {
   private final OrderRepository orderRepository;
   private final OrderItemRepository orderItemRepository;
   private final ProductService productService;
+  private final MemberService memberService;
 
   public OrderService(OrderRepository orderRepository,
       OrderItemRepository orderItemRepository,
-      ProductService productService) {
+      ProductService productService,
+      MemberService memberService) {
     this.orderRepository = orderRepository;
     this.orderItemRepository = orderItemRepository;
     this.productService = productService;
+    this.memberService = memberService;
   }
 
   //  public OrderResponseBody createOrder(OrderRequestBody orderRequestBody, Member member) {
-  public OrderDto createOrder(OrderRequestBody orderRequestBody, Member member) {
+  public OrderDto createOrder(OrderRequestBody orderRequestBody, UserDetailsImpl userDetails) {
 
-    logger.info("Create Order");
+    Member member = memberService.findMemberByUsername(userDetails.getUsername());
 
 //    Set<OrderItemResponseBody> responseBodySet = new HashSet<>();
     Order order = new Order(member);
+    orderRepository.save(order);
 
-    for (OrderItemRequestBody entry : orderRequestBody.orderItemRequestBodySet()) {
-      Long productId = entry.productId();
-      Integer buyQuantity = entry.quantity();
+    orderRequestBody.orderItemRequestBodySet().forEach(orderItemRequestBody ->
+        createAndAddOrderItem(order, orderItemRequestBody)
+    );
 
-      Product product = productService.checkStock(productId);
-      if (product.getQuantity() < buyQuantity) {
-        throw new OutOfStockException(productId);
-      }
-
-      product.adjustStockMinus(buyQuantity);
-
-      OrderItem orderItem = new OrderItem(product, buyQuantity);
-
-      // DB 의 N 쪽이 주인이 된다. (N 쪽이 FK)
-      // 관계의 주인인 orderItem 이 order 를 수정하는 코드를 작성해야 한다.
-      // 두 객체에 모두 명시적으로 반영
-      orderItem.setOrder(order);
-      order.addOrderItem(orderItem);
-
-      orderItemRepository.save(orderItem);
-//      responseBodySet.add(new OrderItemResponseBody(productId, buyQuantity));
-    }
-
-    // 다시 order에 orderItem을 저장
     orderRepository.save(order);
 
     return OrderDto.from(order);
@@ -92,5 +76,27 @@ public class OrderService {
 
     orderRepository.save(order);
     return OrderDto.from(order);
+  }
+
+  private void createAndAddOrderItem(Order order, OrderItemRequestBody requestBody) {
+    Long productId = requestBody.productId();
+    Integer buyQuantity = requestBody.quantity();
+
+    Product product = productService.checkStock(productId);
+    if (product.getQuantity() < buyQuantity) {
+      throw new OutOfStockException(productId);
+    }
+
+    product.adjustStockMinus(buyQuantity);
+
+    OrderItem orderItem = new OrderItem(product, buyQuantity);
+
+    // DB 의 N 쪽이 주인이 된다. (N 쪽이 FK)
+    // 관계의 주인인 orderItem 이 order 를 수정하는 코드를 작성해야 한다.
+    // 두 객체에 모두 명시적으로 반영
+
+    order.addOrderItem(orderItem);
+
+//      responseBodySet.add(new OrderItemResponseBody(productId, buyQuantity));
   }
 }
