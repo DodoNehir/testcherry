@@ -117,7 +117,7 @@ public class MemberService {
     // set refresh token null
     Cookie cookie = new Cookie("refresh", null);
     cookie.setMaxAge(0);
-    cookie.setSecure(true); // HTTPS
+//    cookie.setSecure(true); // HTTPS
     cookie.setPath("/");
     response.addCookie(cookie);
   }

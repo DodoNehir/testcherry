@@ -55,10 +55,10 @@ management:
     health:
       show-details: always
 
-server:
-  ssl:
-    enabled: true
-    key-store: src/main/resources/mykeystore.p12
-    key-store-password: ${SSL_PASSWORD}
-    key-store-type: PKCS12
-    key-alias: myalias
+#server:
+#  ssl:
+#    enabled: true
+#    key-store: src/main/resources/mykeystore.p12
+#    key-store-password: ${SSL_PASSWORD}
+#    key-store-type: PKCS12
+#    key-alias: myalias
