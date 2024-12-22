@@ -30,7 +30,7 @@ class OrderServiceTest {
   OrderRepository orderRepository;
 
   @Mock
-  OrderItemRepository orderItemRepository;
+  MemberService memberService;
 
   @Mock
   MemberRepository memberRepository;
@@ -64,6 +64,8 @@ class OrderServiceTest {
 
     // newOrder method 호출 때 필요한 것들
     OrderRequestBody orderRequestBody = new OrderRequestBody(itemSet);
+
+    when(memberService.findMemberByUsername(userDetails.getUsername())).thenReturn(member);
 
     when(productService.checkStock(1L)).thenReturn(product1);
     when(productService.checkStock(2L)).thenReturn(product2);
@@ -101,6 +103,8 @@ class OrderServiceTest {
     }
 
     OrderRequestBody orderRequestBody = new OrderRequestBody(itemSet);
+
+    when(memberService.findMemberByUsername(userDetails.getUsername())).thenReturn(member);
 
     lenient().when(productService.checkStock(1L)).thenReturn(product1);
     lenient().when(productService.checkStock(2L)).thenReturn(product2);

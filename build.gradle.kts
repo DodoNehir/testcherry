@@ -36,7 +36,7 @@ dependencies {
     implementation("net.datafaker:datafaker:2.4.1")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 
-    implementation("com.mysql:mysql-connector-j")
+    runtimeOnly("com.mysql:mysql-connector-j")
 //    runtimeOnly("org.postgresql:postgresql")
     implementation("io.jsonwebtoken:jjwt-impl:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
@@ -45,7 +45,7 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
 
 //    implementation("com.h2database:h2")
-//    testRuntimeOnly("com.h2database:h2")
+    testRuntimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
