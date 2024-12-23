@@ -8,14 +8,14 @@
 
 * Spring Boot 3
 * Java 17
-* MySQL
+* PostgreSQL
 * Gradle
 
 ### 아키텍처
 
 ```mermaid
 graph LR
-A(Spring Boot)-->B[MySQL]
+A(Spring Boot)-->B[PostgreSQL]
 ```
 
 ### 시나리오
@@ -48,7 +48,7 @@ access 토큰은 1시간, refresh 토큰은 24시간 유효해요
 <br>
 
 ## API 명세
-https://localhost:8080/swagger-ui/index.html
+http://relaxed-daveta-kiraz-787c046b.koyeb.app/swagger-ui/index.html
 
 ## 테스트 방법
 (image)

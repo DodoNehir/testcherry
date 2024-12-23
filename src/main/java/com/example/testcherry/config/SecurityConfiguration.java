@@ -79,7 +79,11 @@ public class SecurityConfiguration {
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowCredentials(true);
-    configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://127.0.0.1:3000"));
+    configuration.setAllowedOrigins(
+        List.of("http://relaxed-daveta-kiraz-787c046b.koyeb.app"
+//            "http://localhost:3000",
+//            "http://127.0.0.1:3000"
+        ));
     configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
     configuration.addAllowedHeader("*");
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

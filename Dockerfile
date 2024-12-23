@@ -8,7 +8,7 @@ COPY build.gradle.kts .
 COPY settings.gradle.kts .
 COPY src src
 
-RUN ./gradlew clean build
+RUN ./gradlew build
 
 
 FROM eclipse-temurin:17-jdk
