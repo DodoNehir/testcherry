@@ -10,7 +10,6 @@ public interface RefreshReposiotry extends JpaRepository<Refresh, Long> {
 
   boolean existsByRefreshToken(String refreshToken);
 
-  @Transactional
-  void deleteByRefreshToken(String refreshToken);
+  void deleteByUsername(String username);
 
 }

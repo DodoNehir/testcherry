@@ -12,8 +12,10 @@ import java.io.IOException;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class ReissueService {
 
@@ -62,7 +64,7 @@ public class ReissueService {
     String newRefreshToken = jwtUtil.generateToken("refresh", username, role, 24 * 60 * 60 * 1000L);
 
     // 기존 refresh 토큰 삭제 & 새로운 refresh 토큰 추가
-    refreshReposiotry.deleteByRefreshToken(refreshToken);
+    refreshReposiotry.deleteByUsername(username);
     saveRefreshEntity(username, newRefreshToken, 24 * 60 * 60 * 1000L);
 
     String userAgent = request.getHeader("User-Agent");

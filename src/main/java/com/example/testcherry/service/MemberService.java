@@ -85,57 +85,17 @@ public class MemberService {
     }
   }
 
-  public void logout(String refreshToken, HttpServletResponse response) {
-    logger.info("Logout token: {}", refreshToken);
-    // null check
-    if (refreshToken == null) {
-      throw new InvalidJwtException("refresh");
-    }
+  public void logout(String username, HttpServletResponse response) {
+    // delete refreshToken from DB
+    refreshReposiotry.deleteByUsername(username);
 
-    // expire check
-    try {
-      jwtUtil.isExpired(refreshToken);
-    } catch (ExpiredJwtException e) {
-      throw e;
-    }
-
-    // category refresh check
-    String category = jwtUtil.getCategory(refreshToken);
-    if (!category.equals("refresh")) {
-      throw new InvalidJwtException("refresh");
-    }
-
-    // DB check
-    boolean exists = refreshReposiotry.existsByRefreshToken(refreshToken);
-    if (!exists) {
-      throw new InvalidJwtException("refresh");
-    }
-
-    // delete from DB
-    refreshReposiotry.deleteByRefreshToken(refreshToken);
-
-    // set refresh token null
+    // set refresh cookie null
     Cookie cookie = new Cookie("refresh", null);
     cookie.setMaxAge(0);
 //    cookie.setSecure(true); // HTTPS
     cookie.setPath("/");
     response.addCookie(cookie);
   }
-
-//  public void login(LoginRequestBody loginRequestBody) {
-//    String username = loginRequestBody.username();
-//    String password = loginRequestBody.password();
-//
-  // id
-//    Member member = memberRepository.findByUsername(username)
-//        .orElseThrow(() -> new MemberNotFoundException(username));
-
-  // password
-//    if (!bCryptPasswordEncoder.matches(password, member.getPassword())) {
-//      throw new MemberNotFoundException(username);
-//    }
-//
-//  }
 
 
 }

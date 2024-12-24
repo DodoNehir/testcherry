@@ -112,7 +112,7 @@ public class SecurityConfiguration {
             .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**")
             .permitAll()
 
-            .requestMatchers(HttpMethod.POST, "/reissue").hasAnyRole("MEMBER")
+            .requestMatchers(HttpMethod.POST, "/reissue").permitAll()
 
             .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
 

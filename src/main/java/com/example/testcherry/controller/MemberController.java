@@ -41,19 +41,11 @@ public class MemberController {
 
   @Operation(summary = "로그아웃")
   @PostMapping("/logout")
-  public Response<String> logout(@CookieValue("refreshToken") String refresh, HttpServletResponse response) {
-    memberService.logout(refresh, response);
+  public Response<String> logout(Authentication authentication, HttpServletResponse response) {
+    UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+    memberService.logout(userDetails.getUsername(), response);
     return Response.success("logout successful");
   }
-
-//  @Operation(summary = "인증", description = "가입된 멤버가 맞는 지 확인합니다.")
-//  @PostMapping("/login")
-//  public Response<Void> login(
-//      @Valid @RequestBody LoginRequestBody loginRequestBody) {
-//    memberService.login(
-//        loginRequestBody);
-//    return Response.success(null);
-//  }
 
 
   @Operation(summary = "id로 회원찾기", description = "id는 회원의 순서를 말합니다. ADMIN 만 사용할 수 있습니다.")
