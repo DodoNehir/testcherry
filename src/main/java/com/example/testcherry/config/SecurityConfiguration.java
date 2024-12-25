@@ -1,6 +1,7 @@
 package com.example.testcherry.config;
 
 import com.example.testcherry.auth.handler.CustomAccessDeniedHandler;
+import com.example.testcherry.auth.handler.CustomAuthenticationEntryPoint;
 import com.example.testcherry.auth.jwt.filter.JwtExceptionFilter;
 import com.example.testcherry.auth.jwt.filter.JwtAuthenticationFilter;
 import com.example.testcherry.auth.jwt.util.JwtUtil;
@@ -92,7 +93,8 @@ public class SecurityConfiguration {
   }
 
   @Bean
-  SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  SecurityFilterChain securityFilterChain(HttpSecurity http,
+      CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
 
     http.csrf(CsrfConfigurer::disable);
     http.httpBasic(AbstractHttpConfigurer::disable);
@@ -111,6 +113,7 @@ public class SecurityConfiguration {
             // Swagger UI
             .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**")
             .permitAll()
+            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
             .requestMatchers(HttpMethod.POST, "/reissue").permitAll()
 
@@ -149,7 +152,9 @@ public class SecurityConfiguration {
 
     // handler
     http.exceptionHandling(httpSecurityExceptionHandlingConfigurer ->
-        httpSecurityExceptionHandlingConfigurer.accessDeniedHandler(customAccessDeniedHandler));
+        httpSecurityExceptionHandlingConfigurer
+            .accessDeniedHandler(customAccessDeniedHandler)
+            .authenticationEntryPoint(customAuthenticationEntryPoint));
 
     return http.build();
   }
