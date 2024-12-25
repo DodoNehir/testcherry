@@ -3,6 +3,7 @@ package com.example.testcherry.controller;
 import com.example.testcherry.model.dto.MemberDto;
 import com.example.testcherry.model.entity.Member;
 import com.example.testcherry.model.entity.Response;
+import com.example.testcherry.model.member.JoinRequestBody;
 import com.example.testcherry.model.member.MemberDeleteRequest;
 import com.example.testcherry.model.member.UserDetailsImpl;
 import com.example.testcherry.service.MemberService;
@@ -34,8 +35,8 @@ public class MemberController {
 
   @Operation(summary = "회원가입", description = "누구나 가입할 수 있습니다.")
   @PostMapping("/join")
-  public Response<String> join(@Valid @RequestBody MemberDto memberDto) {
-    String newMemberUsername = memberService.join(memberDto);
+  public Response<String> join(@Valid @RequestBody JoinRequestBody joinRequestBody) {
+    String newMemberUsername = memberService.join(joinRequestBody);
     return Response.success(newMemberUsername);
   }
 
@@ -57,12 +58,12 @@ public class MemberController {
 
   @Operation(summary = "회원정보수정", description = "본인만 정보를 수정할 수 있습니다.")
   @PatchMapping("/update")
-  public Response<Void> updateMember(@RequestBody MemberDto updateMemberDto,
+  public Response<Void> updateMember(@RequestBody JoinRequestBody updateRequestBody,
       Authentication authentication) {
 
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     Member member = memberService.findMemberByUsername(userDetails.getUsername());
-    memberService.updateMemberInfo(member, updateMemberDto);
+    memberService.updateMemberInfo(member, updateRequestBody);
     return Response.success(null);
   }
 

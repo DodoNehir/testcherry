@@ -1,6 +1,6 @@
 package com.example.testcherry.model.entity;
 
-import com.example.testcherry.model.dto.MemberDto;
+import com.example.testcherry.model.member.JoinRequestBody;
 import com.example.testcherry.model.member.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,14 +11,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.validator.constraints.Length;
 
@@ -93,14 +91,16 @@ public class Member {
     this.active = false;
   }
 
-  public void update(MemberDto memberDto) {
-    if (!memberDto.address().isBlank()) {
-      this.address = memberDto.address();
+  public void updateInfo(JoinRequestBody joinRequestBody) {
+    if (!joinRequestBody.address().isBlank()) {
+      this.address = joinRequestBody.address();
     }
-    if (!memberDto.phoneNumber().isBlank()) {
-      this.phoneNumber = memberDto.phoneNumber();
+    if (!joinRequestBody.phoneNumber().isBlank()) {
+      this.phoneNumber = joinRequestBody.phoneNumber();
     }
   }
 
-
+  public void setPassword(@NotBlank String password) {
+    this.password = password;
+  }
 }

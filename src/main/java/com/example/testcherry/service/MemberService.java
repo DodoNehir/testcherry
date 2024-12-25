@@ -1,16 +1,15 @@
 package com.example.testcherry.service;
 
 import com.example.testcherry.exception.ForbiddenException;
-import com.example.testcherry.exception.InvalidJwtException;
 import com.example.testcherry.exception.MemberAlreadyExistsException;
 import com.example.testcherry.exception.MemberNotFoundException;
 import com.example.testcherry.jwt.JwtUtil;
 import com.example.testcherry.model.dto.MemberDto;
 import com.example.testcherry.model.entity.Member;
+import com.example.testcherry.model.member.JoinRequestBody;
 import com.example.testcherry.model.member.MemberDeleteRequest;
 import com.example.testcherry.repository.MemberRepository;
 import com.example.testcherry.repository.RefreshReposiotry;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
@@ -37,18 +36,18 @@ public class MemberService {
   }
 
 
-  public String join(MemberDto memberDto) {
-    String username = memberDto.username();
+  public String join(JoinRequestBody joinRequestBody) {
+    String username = joinRequestBody.username();
 
     if (memberRepository.existsByUsername(username)) {
       throw new MemberAlreadyExistsException(username);
     }
 
     memberRepository.save(
-        new Member(memberDto.username(),
-            bCryptPasswordEncoder.encode(memberDto.password()),
-            memberDto.address(),
-            memberDto.phoneNumber()));
+        new Member(joinRequestBody.username(),
+            bCryptPasswordEncoder.encode(joinRequestBody.password()),
+            joinRequestBody.address(),
+            joinRequestBody.phoneNumber()));
     return username;
   }
 
@@ -65,10 +64,10 @@ public class MemberService {
         .orElseThrow(() -> new MemberNotFoundException(username));
   }
 
-  public void updateMemberInfo(Member member, MemberDto updateMemberDto) {
-    logger.info("Update member info: {}", updateMemberDto);
-    if (bCryptPasswordEncoder.matches(updateMemberDto.password(), member.getPassword())) {
-      member.update(updateMemberDto);
+  public void updateMemberInfo(Member member, JoinRequestBody updateRequestBody) {
+    logger.info("Update member info");
+    if (bCryptPasswordEncoder.matches(updateRequestBody.password(), member.getPassword())) {
+      member.updateInfo(updateRequestBody);
       memberRepository.save(member);
     } else {
       throw new ForbiddenException();
