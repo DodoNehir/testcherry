@@ -2,10 +2,10 @@
 *.class
 
 # 모든 .jar 파일 제외
-*.jar
+#*.jar
 
 # build 디렉토리 제외
-build/
+#build/
 
 # .git 디렉토리 제외
 .git/

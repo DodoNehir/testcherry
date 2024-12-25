@@ -20,6 +20,7 @@
 
 FROM eclipse-temurin:17-jdk
 
-COPY --from=build /workspace/app/build/libs/*-SNAPSHOT.jar app.jar
+#COPY --from=build /workspace/app/build/libs/*-SNAPSHOT.jar app.jar
+COPY build/libs/*-SNAPSHOT.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
