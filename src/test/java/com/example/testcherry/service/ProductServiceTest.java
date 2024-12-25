@@ -6,10 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.example.testcherry.domain.product.service.ProductService;
 import com.example.testcherry.exception.ProductNotFoundException;
-import com.example.testcherry.model.dto.ProductDto;
-import com.example.testcherry.model.entity.Product;
-import com.example.testcherry.repository.ProductRepository;
+import com.example.testcherry.domain.product.dto.ProductDto;
+import com.example.testcherry.domain.product.entity.Product;
+import com.example.testcherry.domain.product.repository.ProductRepository;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

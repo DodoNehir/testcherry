@@ -1,18 +1,16 @@
 package com.example.testcherry.controller;
 
-import com.example.testcherry.model.dto.MemberDto;
-import com.example.testcherry.model.entity.Member;
-import com.example.testcherry.model.entity.Response;
-import com.example.testcherry.model.member.JoinRequestBody;
-import com.example.testcherry.model.member.MemberDeleteRequest;
-import com.example.testcherry.model.member.UserDetailsImpl;
-import com.example.testcherry.service.MemberService;
+import com.example.testcherry.domain.member.dto.MemberDto;
+import com.example.testcherry.domain.member.entity.Member;
+import com.example.testcherry.domain.member.dto.JoinRequestBody;
+import com.example.testcherry.domain.member.dto.MemberDeleteRequest;
+import com.example.testcherry.domain.member.UserDetailsImpl;
+import com.example.testcherry.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;

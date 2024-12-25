@@ -1,11 +1,11 @@
 package com.example.testcherry.config;
 
-import com.example.testcherry.handler.CustomAccessDeniedHandler;
-import com.example.testcherry.jwt.JwtExceptionFilter;
-import com.example.testcherry.jwt.JwtFilter;
-import com.example.testcherry.jwt.JwtUtil;
-import com.example.testcherry.jwt.LoginFilter;
-import com.example.testcherry.repository.RefreshReposiotry;
+import com.example.testcherry.auth.handler.CustomAccessDeniedHandler;
+import com.example.testcherry.auth.jwt.filter.JwtExceptionFilter;
+import com.example.testcherry.auth.jwt.filter.JwtAuthenticationFilter;
+import com.example.testcherry.auth.jwt.util.JwtUtil;
+import com.example.testcherry.auth.jwt.filter.JwtLoginFilter;
+import com.example.testcherry.domain.refresh.repository.RefreshReposiotry;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,7 +32,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-  private final JwtFilter jwtFilter;
+  private final JwtAuthenticationFilter jwtAuthenticationFilter;
   private final JwtExceptionFilter jwtExceptionFilter;
   private final AuthenticationConfiguration authenticationConfiguration;
   private final JwtUtil jwtUtil;
@@ -40,13 +40,13 @@ public class SecurityConfiguration {
   private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
   public SecurityConfiguration(
-      JwtFilter jwtFilter,
+      JwtAuthenticationFilter jwtAuthenticationFilter,
       JwtExceptionFilter jwtExceptionFilter,
       AuthenticationConfiguration authenticationConfiguration,
       JwtUtil jwtUtil,
       RefreshReposiotry refreshReposiotry,
       CustomAccessDeniedHandler customAccessDeniedHandler) {
-    this.jwtFilter = jwtFilter;
+    this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     this.jwtExceptionFilter = jwtExceptionFilter;
     this.authenticationConfiguration = authenticationConfiguration;
     this.jwtUtil = jwtUtil;
@@ -138,14 +138,14 @@ public class SecurityConfiguration {
             .anyRequest().authenticated());
 
     // login filter
-    LoginFilter loginFilter = new LoginFilter(authenticationManager(authenticationConfiguration),
+    JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(authenticationManager(authenticationConfiguration),
         jwtUtil, refreshReposiotry);
-    loginFilter.setFilterProcessesUrl("/members/login");
+    jwtLoginFilter.setFilterProcessesUrl("/members/login");
 
     // filter chain
-    http.addFilterAt(loginFilter, UsernamePasswordAuthenticationFilter.class)
-        .addFilterBefore(jwtFilter, LoginFilter.class)
-        .addFilterBefore(jwtExceptionFilter, JwtFilter.class);
+    http.addFilterAt(jwtLoginFilter, UsernamePasswordAuthenticationFilter.class)
+        .addFilterBefore(jwtAuthenticationFilter, JwtLoginFilter.class)
+        .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
 
     // handler
     http.exceptionHandling(httpSecurityExceptionHandlingConfigurer ->

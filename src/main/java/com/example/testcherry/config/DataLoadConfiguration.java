@@ -1,9 +1,9 @@
 package com.example.testcherry.config;
 
-import com.example.testcherry.model.dto.ProductDto;
-import com.example.testcherry.model.member.JoinRequestBody;
-import com.example.testcherry.service.MemberService;
-import com.example.testcherry.service.ProductService;
+import com.example.testcherry.domain.product.dto.ProductDto;
+import com.example.testcherry.domain.member.dto.JoinRequestBody;
+import com.example.testcherry.domain.member.service.MemberService;
+import com.example.testcherry.domain.product.service.ProductService;
 import net.datafaker.Faker;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

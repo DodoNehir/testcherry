@@ -1,8 +1,7 @@
 package com.example.testcherry.controller;
 
-import com.example.testcherry.model.dto.ProductDto;
-import com.example.testcherry.model.entity.Response;
-import com.example.testcherry.service.ProductService;
+import com.example.testcherry.domain.product.dto.ProductDto;
+import com.example.testcherry.domain.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

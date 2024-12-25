@@ -1,10 +1,9 @@
 package com.example.testcherry.controller;
 
 import com.example.testcherry.exception.ForbiddenException;
-import com.example.testcherry.exception.InvalidJwtException;
+import com.example.testcherry.auth.jwt.exception.InvalidJwtException;
 import com.example.testcherry.exception.MemberAlreadyExistsException;
 import com.example.testcherry.exception.MemberNotFoundException;
-import com.example.testcherry.model.entity.Response;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;

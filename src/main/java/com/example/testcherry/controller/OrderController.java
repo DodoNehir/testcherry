@@ -1,13 +1,11 @@
 package com.example.testcherry.controller;
 
-import com.example.testcherry.model.dto.OrderDto;
-import com.example.testcherry.model.entity.Member;
-import com.example.testcherry.model.entity.Response;
-import com.example.testcherry.model.member.UserDetailsImpl;
-import com.example.testcherry.model.order.OrderCancelRequestBody;
-import com.example.testcherry.model.order.OrderRequestBody;
-import com.example.testcherry.service.MemberService;
-import com.example.testcherry.service.OrderService;
+import com.example.testcherry.domain.order.dto.OrderDto;
+import com.example.testcherry.domain.member.UserDetailsImpl;
+import com.example.testcherry.domain.order.dto.OrderCancelRequestBody;
+import com.example.testcherry.domain.order.dto.OrderRequestBody;
+import com.example.testcherry.domain.member.service.MemberService;
+import com.example.testcherry.domain.order.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

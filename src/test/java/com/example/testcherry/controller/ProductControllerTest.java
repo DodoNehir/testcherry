@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.testcherry.AbstractIntegrationTest;
-import com.example.testcherry.model.entity.Product;
-import com.example.testcherry.repository.ProductRepository;
+import com.example.testcherry.domain.product.entity.Product;
+import com.example.testcherry.domain.product.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
