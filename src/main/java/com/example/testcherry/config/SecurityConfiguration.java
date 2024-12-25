@@ -81,9 +81,10 @@ public class SecurityConfiguration {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowCredentials(true);
     configuration.setAllowedOrigins(
-        List.of("http://relaxed-daveta-kiraz-787c046b.koyeb.app"
-//            "http://localhost:3000",
-//            "http://127.0.0.1:3000"
+        List.of(
+//            "http://relaxed-daveta-kiraz-787c046b.koyeb.app",
+            "https://relaxed-daveta-kiraz-787c046b.koyeb.app/",
+            "http://localhost:8080"
         ));
     configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
     configuration.addAllowedHeader("*");
@@ -117,7 +118,7 @@ public class SecurityConfiguration {
 
             .requestMatchers(HttpMethod.POST, "/reissue").permitAll()
 
-            .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
+//            .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
 
             // members
             .requestMatchers(HttpMethod.GET, "/members/**").hasAnyRole("ADMIN")
@@ -141,7 +142,8 @@ public class SecurityConfiguration {
             .anyRequest().authenticated());
 
     // login filter
-    JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(authenticationManager(authenticationConfiguration),
+    JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(
+        authenticationManager(authenticationConfiguration),
         jwtUtil, refreshReposiotry);
     jwtLoginFilter.setFilterProcessesUrl("/members/login");
 

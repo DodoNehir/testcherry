@@ -2,6 +2,7 @@ package com.example.testcherry.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
@@ -9,6 +10,10 @@ import org.springframework.context.annotation.Configuration;
         title = "API DOCS",
         description = "API 설명입니다",
         version = "1.0"
+    ),
+    servers = @Server(
+        url = "https://relaxed-daveta-kiraz-787c046b.koyeb.app",
+        description = "Koyeb 으로 배포한 서비스입니다."
     )
 )
 
