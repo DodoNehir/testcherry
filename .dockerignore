@@ -1,0 +1,21 @@
+# 모든 .class 파일 제외
+*.class
+
+# 모든 .jar 파일 제외
+*.jar
+
+# build 디렉토리 제외
+build/
+
+# .git 디렉토리 제외
+.git/
+
+# 로그 파일 제외
+*.log
+
+# 특정 파일 제외
+erd.png
+README.md
+
+# 특정 디렉토리 내부의 모든 파일 제외
+src/main/resources/templates/*
