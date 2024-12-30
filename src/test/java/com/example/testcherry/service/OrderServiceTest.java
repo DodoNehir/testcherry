@@ -5,17 +5,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
+import com.example.testcherry.domain.member.UserDetailsImpl;
+import com.example.testcherry.domain.member.entity.Member;
+import com.example.testcherry.domain.member.repository.MemberRepository;
 import com.example.testcherry.domain.member.service.MemberService;
+import com.example.testcherry.domain.order.dto.OrderRequestBody;
+import com.example.testcherry.domain.order.repository.OrderRepository;
 import com.example.testcherry.domain.order.service.OrderService;
+import com.example.testcherry.domain.order_item.dto.OrderItemRequestBody;
+import com.example.testcherry.domain.product.entity.Product;
 import com.example.testcherry.domain.product.service.ProductService;
 import com.example.testcherry.exception.OutOfStockException;
-import com.example.testcherry.domain.member.entity.Member;
-import com.example.testcherry.domain.product.entity.Product;
-import com.example.testcherry.domain.member.UserDetailsImpl;
-import com.example.testcherry.domain.order.dto.OrderRequestBody;
-import com.example.testcherry.domain.order_item.dto.OrderItemRequestBody;
-import com.example.testcherry.domain.member.repository.MemberRepository;
-import com.example.testcherry.domain.order.repository.OrderRepository;
 import java.util.HashSet;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
@@ -114,7 +114,8 @@ class OrderServiceTest {
 
     // when & then
 //    OutOfStockException outOfStockException =
-    assertThrows(OutOfStockException.class, () -> orderService.createOrder(orderRequestBody, userDetails));
+    assertThrows(OutOfStockException.class,
+        () -> orderService.createOrder(orderRequestBody, userDetails));
 
 //    assertThat(runtimeException.getMessage()).isEqualTo("product id " + 1L + " is out of stock");
   }
