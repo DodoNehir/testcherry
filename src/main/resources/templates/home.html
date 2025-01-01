@@ -1,22 +1,185 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Latest compiled and minified CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Latest compiled JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <title>Title</title>
+  <style>
+    #mainCarousel .carousel-inner img {
+      object-fit: cover;
+      height: 400px;
+      width: 100%;
+    }
+
+    .card img {
+      object-fit: cover;
+      height: 300px;
+      width: 100%;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #f0f0f0;
+      /* 배경색 */
+      padding: 10px;
+      transition: top 0.3s;
+      /* 부드러운 전환 효과 */
+      z-index: 1000;
+      /* 다른 요소 위에 표시 */
+    }
+
+    .navbar.hidden {
+      top: -70px;
+      /* navbar 높이만큼 위로 숨김 */
+    }
+
+    body {
+      margin: 0;
+      /* body의 기본 margin 제거 */
+      padding-top: 70px;
+      /* navbar 높이만큼 padding 추가 (navbar가 내용을 가리지 않도록) */
+    }
+
+    footer .text-muted a {
+      /* 푸터 내의 text-muted 클래스 안의 a 태그 */
+      color: inherit;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
 </head>
 
 <body>
+  <!-- Nav Bar -->
+  <nav id="mainNavBar" class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="../static/cherryPickTextLogo.png" alt="CherryPickLogo" height="30px">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <form class="d-flex" role="search">
+              <input class="form-control-sm me-2" type="search" placeholder="상품명 검색" aria-label="Search">
+              <button class="btn btn-outline-success" type="submit">검색</button>
+            </form>
+          </li>
+        </ul>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#">회원가입</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">로그인</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">장바구니</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
-<div class="container">
-  <div>
-    <h1>Hello Spring</h1>
-    <p>
-      <a href="/members/new">회원가입</a>
-      <a href="/members">회원목록</a>
-    </p>
+  <!-- Carousel -->
+  <div id="mainCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="0" class="active"></button>
+      <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="1"></button>
+      <button type="button" data-bs-target="#mainCarousel" data-bs-slide-to="2"></button>
+    </div>
+    <div class="carousel-inner">
+      <div class="carousel-item active">
+        <img src="../static/cherries_carousel_1.jpg" alt="cherries_carousel_1" class="d-block img-fluid"
+          style="width:100%">
+      </div>
+      <div class="carousel-item">
+        <img src="../static/cherries_carousel_2.jpg" alt="cherries_carousel_2" class="d-blockimg-fluid"
+          style="width:100%">
+      </div>
+      <div class="carousel-item">
+        <img src="../static/cherries_carousel_3.jpg" alt="cherries_carousel_3" class="d-block img-fluid"
+          style="width:100%">
+      </div>
+    </div>l
+    <button class="carousel-control-prev" type="button" data-bs-target="#mainCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#mainCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
   </div>
-</div>
+
+  <!-- products -->
+  <div class="container">
+    <div class="row row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+      <div class="col">
+        <div class="card">
+          <img src="../static/product_1.jpg" class="card-img-top" alt="이미지1">
+          <div class="card-body">
+            <h5 class="card-title">product_name</h5>
+            <p class="card-text">product_price</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <img src="../static/product_2.jpg" class="card-img-top" alt="이미지2">
+          <div class="card-body">
+            <h5 class="card-title">product_name</h5>
+            <p class="card-text">product_price</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <img src="../static/product_3.jpg" class="card-img-top" alt="이미지N">
+          <div class="card-body">
+            <h5 class="card-title">product_name</h5>
+            <p class="card-text">product_price</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <footer class="bg-light text-center py-3 mt-4">
+    <div class="container">
+      <span class="text-muted" style="font-size: 0.8rem;">주소 : 경상북도 경산시 압량읍 | 대표전화 : 1588-0000 |
+        <a href="#">1:1문의 바로가기</a> | 호스팅 서비스 제공 : Koyeb</span>
+      <br>
+      <span class="text-muted" style="font-size: 0.6rem;">Copyright © Cherrypick Corp. 2025 All Rights Reserved.</span>
+    </div>
+  </footer>
+
+
+  <script>
+    let prevScrollPos = window.pageYOffset;
+    const navbar = document.getElementById("mainNavBar");
+
+    window.onscroll = function () {
+      let currentScrollPos = window.pageYOffset;
+      if (prevScrollPos > currentScrollPos) {
+        navbar.classList.remove("hidden"); // 위로 스크롤 시 나타남
+      } else {
+        navbar.classList.add("hidden"); // 아래로 스크롤 시 숨김
+      }
+      prevScrollPos = currentScrollPos;
+    }
+  </script>
 
 </body>
+
 </html>

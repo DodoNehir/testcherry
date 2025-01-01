@@ -33,9 +33,9 @@ spring:
       password: my-password
 
 
-#  thymeleaf:
-#    prefix: classpath:templates/
-#    suffix: .html
+  thymeleaf:
+    prefix: classpath:templates/
+    suffix: .html
 
 logging:
   level:
