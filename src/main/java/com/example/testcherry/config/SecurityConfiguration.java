@@ -2,12 +2,13 @@ package com.example.testcherry.config;
 
 import com.example.testcherry.auth.handler.CustomAccessDeniedHandler;
 import com.example.testcherry.auth.handler.CustomAuthenticationEntryPoint;
-import com.example.testcherry.auth.jwt.filter.JwtExceptionFilter;
 import com.example.testcherry.auth.jwt.filter.JwtAuthenticationFilter;
-import com.example.testcherry.auth.jwt.util.JwtUtil;
+import com.example.testcherry.auth.jwt.filter.JwtExceptionFilter;
 import com.example.testcherry.auth.jwt.filter.JwtLoginFilter;
+import com.example.testcherry.auth.jwt.util.JwtUtil;
 import com.example.testcherry.domain.refresh.repository.RefreshReposiotry;
 import java.util.List;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -18,6 +19,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
@@ -55,6 +57,14 @@ public class SecurityConfiguration {
     this.customAccessDeniedHandler = customAccessDeniedHandler;
   }
 
+  //  @ConditionalOnProperty(name = "spring.h2.console.enabled", havingValue = "true")
+  @Bean
+  public WebSecurityCustomizer webSecurityCustomizer() {
+    return (web) -> web.ignoring()
+        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()); // 정적 리소스 모두 허용
+    //        .requestMatchers(PathRequest.toH2Console());
+  }
+
   @Bean
   public AuthenticationManager authenticationManager(
       AuthenticationConfiguration authenticationConfiguration)
@@ -68,13 +78,6 @@ public class SecurityConfiguration {
         .role("ADMIN").implies("MEMBER")
         .build();
   }
-
-//  @Bean
-//  @ConditionalOnProperty(name = "spring.h2.console.enabled", havingValue = "true")
-//  public WebSecurityCustomizer configureH2ConsoleEnable() {
-//    return web -> web.ignoring()
-//        .requestMatchers(PathRequest.toH2Console());
-//  }
 
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
@@ -118,10 +121,15 @@ public class SecurityConfiguration {
 
             .requestMatchers(HttpMethod.POST, "/reissue").permitAll()
 
+            .requestMatchers(HttpMethod.GET, "/").permitAll()
+            .requestMatchers(HttpMethod.GET, "members/signup").permitAll()
+            .requestMatchers(HttpMethod.GET, "members/checkId").permitAll()
+            .requestMatchers(HttpMethod.GET, "members/login").permitAll()
+
 //            .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
 
             // members
-            .requestMatchers(HttpMethod.GET, "/members/**").hasAnyRole("ADMIN")
+            .requestMatchers(HttpMethod.GET, "/members/{id}").hasAnyRole("ADMIN")
             .requestMatchers(HttpMethod.POST, "/members/logout").hasAnyRole("MEMBER")
             .requestMatchers(HttpMethod.PATCH, "/members/**").hasAnyRole("MEMBER")
             .requestMatchers(HttpMethod.DELETE, "/members/**").hasAnyRole("MEMBER")
@@ -138,9 +146,9 @@ public class SecurityConfiguration {
             .requestMatchers(HttpMethod.POST, "/orders").hasAnyRole("MEMBER")
             .requestMatchers(HttpMethod.GET, "/orders").hasAnyRole("MEMBER")
 
-            // 모든 request에 대해
-            .anyRequest().authenticated());
-
+        // 모든 request에 대해
+//            .anyRequest().authenticated());
+    );
     // login filter
     JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(
         authenticationManager(authenticationConfiguration),

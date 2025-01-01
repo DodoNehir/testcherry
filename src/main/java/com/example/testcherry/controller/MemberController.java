@@ -1,10 +1,11 @@
 package com.example.testcherry.controller;
 
-import com.example.testcherry.domain.member.dto.MemberDto;
-import com.example.testcherry.domain.member.entity.Member;
+import com.example.testcherry.domain.member.UserDetailsImpl;
+import com.example.testcherry.domain.member.dto.CheckIdResult;
 import com.example.testcherry.domain.member.dto.JoinRequestBody;
 import com.example.testcherry.domain.member.dto.MemberDeleteRequest;
-import com.example.testcherry.domain.member.UserDetailsImpl;
+import com.example.testcherry.domain.member.dto.MemberDto;
+import com.example.testcherry.domain.member.entity.Member;
 import com.example.testcherry.domain.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "Member", description = "Member API")
@@ -46,6 +48,12 @@ public class MemberController {
     return Response.success("logout successful");
   }
 
+  @Operation(summary = "id 중복 확인")
+  @GetMapping("/checkId")
+  public Response<CheckIdResult> isExists(@RequestParam("username") String username) {
+    CheckIdResult result = memberService.isUsernameExist(username);
+    return Response.success(result);
+  }
 
   @Operation(summary = "id로 회원찾기", description = "id는 회원의 순서를 말합니다. ADMIN 만 사용할 수 있습니다.")
   @GetMapping("/{id}")

@@ -1,17 +1,19 @@
 package com.example.testcherry.domain.member.service;
 
+import com.example.testcherry.auth.jwt.util.JwtUtil;
+import com.example.testcherry.domain.member.dto.CheckIdResult;
+import com.example.testcherry.domain.member.dto.JoinRequestBody;
+import com.example.testcherry.domain.member.dto.MemberDeleteRequest;
+import com.example.testcherry.domain.member.dto.MemberDto;
+import com.example.testcherry.domain.member.entity.Member;
+import com.example.testcherry.domain.member.repository.MemberRepository;
+import com.example.testcherry.domain.refresh.repository.RefreshReposiotry;
 import com.example.testcherry.exception.ForbiddenException;
 import com.example.testcherry.exception.MemberAlreadyExistsException;
 import com.example.testcherry.exception.MemberNotFoundException;
-import com.example.testcherry.auth.jwt.util.JwtUtil;
-import com.example.testcherry.domain.member.dto.MemberDto;
-import com.example.testcherry.domain.member.entity.Member;
-import com.example.testcherry.domain.member.dto.JoinRequestBody;
-import com.example.testcherry.domain.member.dto.MemberDeleteRequest;
-import com.example.testcherry.domain.member.repository.MemberRepository;
-import com.example.testcherry.domain.refresh.repository.RefreshReposiotry;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -56,6 +58,21 @@ public class MemberService {
     Member member = memberRepository.findById(id)
         .orElseThrow(() -> new MemberNotFoundException(id));
     return MemberDto.from(member);
+  }
+
+  public CheckIdResult isUsernameExist(String username) {
+    if (Objects.equals(username, "0") | Objects.equals(username, "undefined")
+        | Objects.equals(username, "null") | Objects.equals(username, null)
+        | Objects.equals(username, "select") | Objects.equals(username, "delete")
+        | Objects.equals(username, "create") | Objects.equals(username, "update")) {
+      return new CheckIdResult(false, "잘못된 아이디 형식입니다.");
+    }
+
+    if (memberRepository.existsByUsername(username)) {
+      return new CheckIdResult(false, "중복된 아이디입니다.");
+    } else {
+      return new CheckIdResult(true, "사용 가능한 아이디입니다.");
+    }
   }
 
   public Member findMemberByUsername(String username) {

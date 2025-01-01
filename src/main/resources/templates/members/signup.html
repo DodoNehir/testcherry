@@ -18,28 +18,30 @@
         <form id="user-form">
 
           <label for="username" class="form-label">아이디</label>
-          <div class="input-group mb-5">
-            <input type="text" th:field="*{name}" id="username" class="form-control">
-            <button class="btn btn-outline-secondary" type="button" id="checkUsernameBtn">중복 확인</button>
+          <div class="input-group">
+            <input type="text" id="username" name="username" class="form-control">
+            <button class="btn btn-outline-secondary" type="button" id="checkUsernameBtn">중복 확인
+            </button>
           </div>
-          <div id="usernameCheckResult" class="mt-2"></div>
+          <div id="usernameCheckResult" class="mt-2 mb-5"></div>
 
           <div class="mb-5">
             <label for="password" class="form-label">비밀번호</label>
-            <input type="password" th:field="*{password}" id="password" class="form-control">
+            <input type="password" id="password" name="password" class="form-control">
           </div>
 
           <div class="mb-5">
             <label for="address" class="form-label">주소</label>
-            <input type="address" th:field="*{address}" id="address" class="form-control">
+            <input type="address" id="address" name="address" class="form-control">
           </div>
 
           <div class="mb-5">
             <label for="phoneNumber" class="form-label">전화번호</label>
-            <input type="text" th:field="*{phoneNumber}" id="phoneNumber" class="form-control">
+            <input type="text" id="phoneNumber" name="phoneNumber" class="form-control">
           </div>
 
           <button type="submit" class="btn btn-primary">가입</button>
+          <div id="joinResult" class="mt-2 mb-2"></div>
         </form>
 
       </div>
@@ -57,36 +59,40 @@
       const username = usernameInput.value.trim();
       if (username === "" | username === null) {
         usernameCheckResult.textContent = "아이디를 입력해주세요.";
-        usernameCheckResult.className = "text-danger mt-2"; // 빨간색
+        usernameCheckResult.className = "text-danger mt-2 mb-4"; // 빨간색
         return;
       }
 
       if (username === "0" | username === "undefined" | !isNaN(username) | username === "select"
         | username === "delete" | username === "create" | username === "update") {
         usernameCheckResult.textContent = "잘못된 아이디 형식입니다.";
-        usernameCheckResult.className = "text-danger mt-2";
+        usernameCheckResult.className = "text-danger mt-2 mb-4";
         return;
       }
 
-      fetch('/checkId?username=' + username) // 스프링 엔드포인트 호출
+      fetch('/members/checkId?username=' + username) // 스프링 엔드포인트 호출
         .then(response => response.json())
         .then(data => {
-          if (data.exists) {
-            usernameCheckResult.textContent = "중복된 아이디입니다.";
-            usernameCheckResult.className = "text-danger mt-2"; // 빨간색
+          console.log(data);
+          if (!data.data) {
+            throw new Error("서버 응답 형식이 올바르지 않습니다.");
+          }
+
+          const result = data.data;
+          usernameCheckResult.textContent = result.message;
+          if (result.usable) {
+            usernameCheckResult.className = "text-success mt-2 mb-4"; // 초록색
           } else {
-            usernameCheckResult.textContent = "사용 가능한 아이디입니다.";
-            usernameCheckResult.className = "text-success mt-2"; // 초록색
+            usernameCheckResult.className = "text-danger mt-2 mb-4"; // 빨간색
           }
         })
         .catch(error => {
           console.error("오류 발생:", error);
           usernameCheckResult.textContent = "오류가 발생했습니다.";
-          usernameCheckResult.className = "text-danger mt-2"; // 빨간색
+          usernameCheckResult.className = "text-danger mt-2 mb-4"; // 빨간색
         });
     });
   </script>
-
 
 
   <script>
@@ -94,30 +100,38 @@
     document.getElementById('user-form').addEventListener('submit', function (event) {
       event.preventDefault(); // 폼의 기본 제출 동작을 막음
 
-      const name = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
-      const address = document.getElementById('address').value.trim();
-      const phoneNumber = document.getElementById('phoneNumber').value.trim();
+      const joinResult = document.getElementById('joinResult');
+      const formData = new FormData(this);
+      const data = {};
+      formData.forEach((value, key) => data[key] = value);
 
-      fetch('localhost:8080/members/new', {
+      fetch('/members/join', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json' // JSON 형식으로 데이터 전송
         },
-        body: JSON.stringify({
-          name: name,
-          password: password,
-          address: address,
-          phoneNumber: phoneNumber
-        })
+        body: JSON.stringify(data)
       })
-        .then(response => response.json())
+        .then(response => {
+          if (!response.ok) {
+            return response.json()
+              .then(error => {
+                throw new Error(error.message || "서버 오류")
+              });
+          }
+          return response.json();
+        })
         .then(data => {
-          console.log('Success:', data);
-          alert('가입이 완료되었습니다!');
+          console.log(data);
+          joinResult.textContent = "";
+          if (confirm('환영합니다 ' + data.data + ' 님! 홈으로 이동하시겠습니까?')) {
+            window.location.href = '/';
+          }
         })
         .catch(error => {
           console.error('Error:', error);
+          joinResult.textContent = "가입에 실패했습니다. " + error.message;
+          joinResult.className = "text-danger mt-2 mb-2";
         });
     });
   </script>
