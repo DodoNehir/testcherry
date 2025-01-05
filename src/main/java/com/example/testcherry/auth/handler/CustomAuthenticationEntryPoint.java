@@ -8,6 +8,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
+/**
+ * 로그인을 하지 않은 사용자가 로그인 유저를 위한 API 로 접근할 떄
+ * 또는 잘못된 ID/PW 입력 시
+ */
+
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
 

@@ -36,19 +36,20 @@ public class JwtUtil {
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
 
-    Map<String, String> tokens = new HashMap<>();
-    tokens.put("accessToken", accessToken);
-
     if (isMobileRequest(userAgent)) {
-      // 모바일 요청은 refresh 도 json 에 포함하여 응답
+      // 모바일 요청은 json 응답
+      Map<String, String> tokens = new HashMap<>();
+      tokens.put("accessToken", accessToken);
       tokens.put("refreshToken", refreshToken);
+      ObjectMapper objectMapper = new ObjectMapper();
+      response.getWriter().write(objectMapper.writeValueAsString(tokens));
     } else {
-      // 웹 요청은 refresh 를 쿠키에 담아서 응답
+      // 웹 요청은 accessToken: Header, refreshToken: Cookie
+      response.addHeader("Authorization", "Bearer " + accessToken);
       response.addCookie(createCookie("refreshToken", refreshToken));
+      response.sendRedirect("/");
     }
 
-    ObjectMapper objectMapper = new ObjectMapper();
-    response.getWriter().write(objectMapper.writeValueAsString(tokens));
   }
 
   public String generateToken(String category, String username, String role, Long expiration) {

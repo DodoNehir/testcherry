@@ -18,12 +18,12 @@ public class HomeController {
     return "members/signup";
   }
 
-  @GetMapping("members/login")
+  @GetMapping("/login")
   public String loginForm(Model model, @RequestParam(value = "error", required = false) String error) {
     if (error != null) {
       model.addAttribute("errorMessage", "아이디 또는 비밀번호가 일치하지 않습니다.");
     }
-    return "members/login";
+    return "login";
   }
 
 }

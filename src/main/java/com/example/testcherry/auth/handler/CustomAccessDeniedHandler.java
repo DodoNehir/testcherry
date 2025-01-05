@@ -8,6 +8,10 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
+/**
+ * 로그인은 했지만 해당 API 를 사용할 권한이 없을 때
+ */
+
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 

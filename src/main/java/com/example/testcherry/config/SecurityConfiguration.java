@@ -2,9 +2,9 @@ package com.example.testcherry.config;
 
 import com.example.testcherry.auth.handler.CustomAccessDeniedHandler;
 import com.example.testcherry.auth.handler.CustomAuthenticationEntryPoint;
+import com.example.testcherry.auth.handler.CustomAuthenticationSuccessHandler;
 import com.example.testcherry.auth.jwt.filter.JwtAuthenticationFilter;
 import com.example.testcherry.auth.jwt.filter.JwtExceptionFilter;
-import com.example.testcherry.auth.jwt.filter.JwtLoginFilter;
 import com.example.testcherry.auth.jwt.util.JwtUtil;
 import com.example.testcherry.domain.refresh.repository.RefreshReposiotry;
 import java.util.List;
@@ -19,10 +19,8 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
-import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -55,14 +53,6 @@ public class SecurityConfiguration {
     this.jwtUtil = jwtUtil;
     this.refreshReposiotry = refreshReposiotry;
     this.customAccessDeniedHandler = customAccessDeniedHandler;
-  }
-
-  //  @ConditionalOnProperty(name = "spring.h2.console.enabled", havingValue = "true")
-  @Bean
-  public WebSecurityCustomizer webSecurityCustomizer() {
-    return (web) -> web.ignoring()
-        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()); // 정적 리소스 모두 허용
-    //        .requestMatchers(PathRequest.toH2Console());
   }
 
   @Bean
@@ -102,7 +92,14 @@ public class SecurityConfiguration {
 
     http.csrf(CsrfConfigurer::disable);
     http.httpBasic(AbstractHttpConfigurer::disable);
-    http.formLogin(FormLoginConfigurer::disable);
+
+    http.formLogin(form -> form
+        .loginPage("/login") // 인증되지 않은 사용자가 보호된 리소스로 접근할 때 /login 으로 리디렉션
+        .loginProcessingUrl("/login") // 로그인 폼 제출 요청을 처리하는 URL.
+        // 여기서는 UsernamePasswordAuthenticationFilter 가 처리한다.
+        .successHandler(new CustomAuthenticationSuccessHandler(jwtUtil, refreshReposiotry))
+        .failureUrl("/login?error"));
+
     http.logout(LogoutConfigurer::disable);
 
     http.sessionManagement(
@@ -114,6 +111,7 @@ public class SecurityConfiguration {
     // domain
     http.authorizeHttpRequests(
         (requests) -> requests
+            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
             // Swagger UI
             .requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**")
             .permitAll()
@@ -124,7 +122,7 @@ public class SecurityConfiguration {
             .requestMatchers(HttpMethod.GET, "/").permitAll()
             .requestMatchers(HttpMethod.GET, "members/signup").permitAll()
             .requestMatchers(HttpMethod.GET, "members/checkId").permitAll()
-            .requestMatchers(HttpMethod.GET, "members/login").permitAll()
+            .requestMatchers("/login").permitAll()
 
 //            .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
 
@@ -133,7 +131,7 @@ public class SecurityConfiguration {
             .requestMatchers(HttpMethod.POST, "/members/logout").hasAnyRole("MEMBER")
             .requestMatchers(HttpMethod.PATCH, "/members/**").hasAnyRole("MEMBER")
             .requestMatchers(HttpMethod.DELETE, "/members/**").hasAnyRole("MEMBER")
-            .requestMatchers(HttpMethod.POST, "/members/join", "/members/login").permitAll()
+            .requestMatchers(HttpMethod.POST, "/members/join").permitAll()
 
             // products
             .requestMatchers(HttpMethod.POST, "/products").hasAnyRole("ADMIN")
@@ -149,15 +147,9 @@ public class SecurityConfiguration {
         // 모든 request에 대해
 //            .anyRequest().authenticated());
     );
-    // login filter
-    JwtLoginFilter jwtLoginFilter = new JwtLoginFilter(
-        authenticationManager(authenticationConfiguration),
-        jwtUtil, refreshReposiotry);
-    jwtLoginFilter.setFilterProcessesUrl("/members/login");
 
     // filter chain
-    http.addFilterAt(jwtLoginFilter, UsernamePasswordAuthenticationFilter.class)
-        .addFilterBefore(jwtAuthenticationFilter, JwtLoginFilter.class)
+    http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
         .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
 
     // handler
