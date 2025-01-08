@@ -36,8 +36,8 @@ dependencies {
     implementation("net.datafaker:datafaker:2.4.1")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 
-//    runtimeOnly("com.mysql:mysql-connector-j")
-    runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("com.mysql:mysql-connector-j")
+//    runtimeOnly("org.postgresql:postgresql")
     implementation("io.jsonwebtoken:jjwt-impl:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
 
