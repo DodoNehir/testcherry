@@ -32,23 +32,25 @@ public class JwtUtil {
 
   public void setTokensInResponse(HttpServletResponse response,
       String accessToken, String refreshToken, String userAgent) throws IOException {
-    // accessToken 을 Json 으로 전송하는 것은 동일
+
     response.setContentType("application/json");
     response.setCharacterEncoding("UTF-8");
+    Map<String, String> tokens = new HashMap<>();
+    tokens.put("accessToken", "Bearer " + accessToken);
 
     if (isMobileRequest(userAgent)) {
-      // 모바일 요청은 json 응답
-      Map<String, String> tokens = new HashMap<>();
-      tokens.put("accessToken", accessToken);
+      // 모바일 요청
       tokens.put("refreshToken", refreshToken);
-      ObjectMapper objectMapper = new ObjectMapper();
-      response.getWriter().write(objectMapper.writeValueAsString(tokens));
     } else {
-      // 웹 요청은 accessToken: Header, refreshToken: Cookie
-      response.addHeader("Authorization", "Bearer " + accessToken);
+      // 웹 요청
+//      response.addHeader("Authorization", "Bearer " + accessToken);
+      // redirect 때문에 헤더가 유실되어 json 으로 전달
       response.addCookie(createCookie("refreshToken", refreshToken));
-      response.sendRedirect("/");
+//      response.sendRedirect("/");
+      // redirect는 클라이언트에서 처리
     }
+    ObjectMapper objectMapper = new ObjectMapper();
+    response.getWriter().write(objectMapper.writeValueAsString(tokens));
 
   }
 

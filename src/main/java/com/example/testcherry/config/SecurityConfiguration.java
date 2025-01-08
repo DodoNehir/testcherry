@@ -9,6 +9,7 @@ import com.example.testcherry.auth.jwt.util.JwtUtil;
 import com.example.testcherry.domain.refresh.repository.RefreshReposiotry;
 import java.util.List;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,6 +29,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -71,17 +73,19 @@ public class SecurityConfiguration {
 
   @Bean
   public CorsConfigurationSource corsConfigurationSource() {
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowCredentials(true);
     configuration.setAllowedOrigins(
         List.of(
 //            "http://relaxed-daveta-kiraz-787c046b.koyeb.app",
             "https://relaxed-daveta-kiraz-787c046b.koyeb.app/",
-            "http://localhost:8080"
+            "http://localhost:8080",
+            "http://127,0,0,1:8080"
         ));
     configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "OPTIONS"));
     configuration.addAllowedHeader("*");
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//    configuration.addExposedHeader("Authorization");
     source.registerCorsConfiguration("/**", configuration);
     return source;
   }

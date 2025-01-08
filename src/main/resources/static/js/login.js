@@ -34,38 +34,27 @@ document.addEventListener('DOMContentLoaded', () => {
             })
                 .then(response => {
                     if (!response.ok) {
-                        return response.json()
-                            .then(data => {
-                                if (data && data.message) {
-                                    throw new Error(data.message);
-                                }
-                                else {
-                                    throw new Error("아이디와 비밀번호를 확인해주세요");
-                                }
-                            })
-                            .catch(err => {
-                                console.error("json 파싱 오류", err);
-                                throw new Error("서버에서 데이터를 처리하는 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요");
-                            });
+                        return response.json().then(data => {
+                            throw new Error(data?.message || "아이디와 비밀번호를 확인해주세요");
+                        })
                     }
-                    const accessToken = response.headers.get('Authorization');
+                    return response.json();
+                })
+                .then(data => {
+                    const accessToken = data.accessToken;
                     if (accessToken) {
                         sessionStorage.setItem('accessToken', accessToken);
                         console.log("Access Token:", accessToken);
+                        window.location.href = "/"; // 리디렉션
                     } else {
-                        console.error('Authorization 헤더가 없습니다.');
+                        console.error('accessToken이 없습니다.', data);
                         throw new Error("아이디와 비밀번호를 확인해주세요");
                     }
                 })
                 .catch(error => {
                     const loginResult = document.querySelector('#loginResult');
-                    if (error.message) {
-                        loginResult.textContent = `로그인 오류: ${error.message}`;
-                    } else {
-                        loginResult.textContent = `로그인 중 네트워크 오류가 발생했습니다. 인터넷 연결을 확인해주세요`;
-                    }
+                    loginResult.textContent = `로그인 오류: ${error.message}`;
                     loginResult.className = "text-danger mt-2 mb-2";
-
                 });
         });
     }
