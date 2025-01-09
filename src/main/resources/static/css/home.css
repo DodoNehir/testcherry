@@ -1,0 +1,44 @@
+#mainCarousel .carousel-inner img {
+    object-fit: cover;
+    height: 400px;
+    width: 100%;
+  }
+
+  .card img {
+    object-fit: cover;
+    height: 300px;
+    width: 100%;
+  }
+
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f0f0f0;
+    /* 배경색 */
+    padding: 10px;
+    transition: top 0.3s;
+    /* 부드러운 전환 효과 */
+    z-index: 1000;
+    /* 다른 요소 위에 표시 */
+  }
+
+  .navbar.hidden {
+    top: -70px;
+    /* navbar 높이만큼 위로 숨김 */
+  }
+
+  body {
+    margin: 0;
+    /* body의 기본 margin 제거 */
+    padding-top: 70px;
+    /* navbar 높이만큼 padding 추가 (navbar가 내용을 가리지 않도록) */
+  }
+
+  footer .text-muted a {
+    /* 푸터 내의 text-muted 클래스 안의 a 태그 */
+    color: inherit;
+    text-decoration: none;
+    font-weight: bold;
+  }
