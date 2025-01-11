@@ -31,7 +31,7 @@ class ProductControllerTest extends AbstractIntegrationTest {
 
   @BeforeEach
   void setUp() {
-    product = new Product("ABCD", "HHA", 50);
+    product = Product.createTestProduct();
     product = productRepository.save(product);
   }
 

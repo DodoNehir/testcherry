@@ -43,7 +43,9 @@ public class DataLoadConfiguration implements ApplicationRunner {
       ProductDto productDto = new ProductDto(
           faker.food().dish(),
           faker.food().ingredient(),
-          faker.number().numberBetween(10, 10000)
+          faker.number().numberBetween(10, 10000),
+          faker.number().numberBetween(8000, 40000),
+          "/images/product_" + (i + 1) + ".jpg"
       );
       productService.registerProduct(productDto);
     }

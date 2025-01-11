@@ -31,7 +31,7 @@ class ProductServiceTest {
   @Test
   void registerProduct() {
     // given
-    ProductDto productDto = new ProductDto("na", "n", 10);
+    ProductDto productDto = ProductDto.createTestProductDto();
     Product product = Product.of(productDto);
 
     when(productRepository.save(Mockito.any(Product.class))).thenReturn(product);
@@ -48,7 +48,7 @@ class ProductServiceTest {
   void findProductById_shouldReturnProductDto() {
     // given
     Long productId = 1L;
-    Product product = new Product("name", "description", 10);
+    Product product = Product.createTestProduct();
     when(productRepository.findById(productId)).thenReturn(Optional.of(product));
 
     // when
@@ -84,8 +84,8 @@ class ProductServiceTest {
   void updateProductById() {
     // given
     Long productId = 1L;
-    Product existingProduct = new Product("old name", "old description", 10);
-    ProductDto updateDto = new ProductDto("new name", "new description", 20);
+    Product existingProduct = Product.createTestProduct(10);
+    ProductDto updateDto = ProductDto.createTestProductDto(20);
 
     when(productRepository.findById(productId)).thenReturn(Optional.of(existingProduct));
 
@@ -101,7 +101,7 @@ class ProductServiceTest {
   void deleteProductById() {
     // given
     Long productId = 1L;
-    Product product = new Product("name", "description", 10);
+    Product product = Product.createTestProduct();
     when(productRepository.findById(productId)).thenReturn(Optional.of(product));
 
     // when

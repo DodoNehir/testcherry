@@ -33,17 +33,27 @@ public class Product {
   @NotNull
   private Integer quantity;
 
+  @NotNull
+  private Integer price;
 
-  public Product(String name, String description, Integer quantity) {
+  @NotBlank
+  private String imagePath;
+
+
+  public Product(String name, String description, Integer quantity, Integer price, String imagePath) {
     this.name = name;
     this.description = description;
     this.quantity = quantity;
+    this.price = price;
+    this.imagePath = imagePath;
   }
 
   public static Product of(ProductDto productDto) {
     return new Product(productDto.name(),
         productDto.description(),
-        productDto.quantity());
+        productDto.quantity(),
+        productDto.price(),
+        productDto.imagePath());
   }
 
   public void adjustStockPlus(Integer quantity) {
@@ -74,4 +84,19 @@ public class Product {
     }
   }
 
+  public static Product createTestProduct(String name, String description, Integer quantity, Integer price, String imagePath) {
+    return new Product(name, description, quantity, price, imagePath);
+  }
+  public static Product createTestProduct(String name, String description, Integer quantity) {
+    return new Product(name, description, quantity, 10000, "/images/product_1.jpg");
+  }
+  public static Product createTestProduct(String name, String description) {
+    return new Product(name, description, 1000, 10000, "/images/product_1.jpg");
+  }
+  public static Product createTestProduct(Integer quantity) {
+    return new Product("test entity", "test description", quantity, 10000, "/images/product_1.jpg");
+  }
+  public static Product createTestProduct() {
+    return new Product("test entity", "test description", 1000, 10000, "/images/product_1.jpg");
+  }
 }

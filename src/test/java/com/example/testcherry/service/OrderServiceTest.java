@@ -53,9 +53,9 @@ class OrderServiceTest {
 
     Integer stockQuantity = 100;
     Integer buyQuantity = 30;
-    Product product1 = new Product("sajo", "asdf", stockQuantity);
-    Product product2 = new Product("apple", "asdf", stockQuantity);
-    Product product3 = new Product("tiramisu", "asdf", stockQuantity);
+    Product product1 = Product.createTestProduct(stockQuantity);
+    Product product2 = Product.createTestProduct(stockQuantity);
+    Product product3 = Product.createTestProduct(stockQuantity);
 
     Set<OrderItemRequestBody> itemSet = new HashSet<>();
     for (int i = 1; i < 4; i++) {
@@ -93,9 +93,9 @@ class OrderServiceTest {
 
     Integer stockQuantity = 10;
     Integer buyQuantity = 30;
-    Product product1 = new Product("sajo", "asdf", stockQuantity);
-    Product product2 = new Product("apple", "asdf", stockQuantity);
-    Product product3 = new Product("tiramisu", "asdf", stockQuantity);
+    Product product1 = Product.createTestProduct(stockQuantity);
+    Product product2 = Product.createTestProduct(stockQuantity);
+    Product product3 = Product.createTestProduct(stockQuantity);
 
     Set<OrderItemRequestBody> itemSet = new HashSet<>();
     for (int i = 1; i < 4; i++) {

@@ -83,33 +83,17 @@
   <!-- products -->
   <div class="container">
     <div class="row row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
-      <div class="col">
+
+      <div class="col" th:each="product : ${products}">
         <div class="card">
-          <img src="/images/product_1.jpg" class="card-img-top" alt="이미지1">
+          <img th:src="${product.imagePath}" class="card-img-top" th:alt="${product.name}">
           <div class="card-body">
-            <h5 class="card-title">product_name</h5>
-            <p class="card-text">product_price</p>
+            <h5 class="card-title" th:text="${product.name}"></h5>
+            <p class="card-text" th:text="${product.price}"></p>
           </div>
         </div>
       </div>
-      <div class="col">
-        <div class="card">
-          <img src="/images/product_2.jpg" class="card-img-top" alt="이미지2">
-          <div class="card-body">
-            <h5 class="card-title">product_name</h5>
-            <p class="card-text">product_price</p>
-          </div>
-        </div>
-      </div>
-      <div class="col">
-        <div class="card">
-          <img src="/images/product_3.jpg" class="card-img-top" alt="이미지N">
-          <div class="card-body">
-            <h5 class="card-title">product_name</h5>
-            <p class="card-text">product_price</p>
-          </div>
-        </div>
-      </div>
+      
     </div>
   </div>
 

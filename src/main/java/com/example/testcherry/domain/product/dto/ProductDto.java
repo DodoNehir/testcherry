@@ -16,14 +16,30 @@ public record ProductDto(
 
     @Min(0)
     @NotNull(message = "상품 재고를 입력해주세요")
-    Integer quantity) {
+    Integer quantity,
+
+    @Min(1000)
+    @NotNull(message = "상품 가격을 입력해주세요")
+    Integer price,
+
+    @NotBlank(message = "상품 이미지 path를 입력해주세요")
+    String imagePath) {
 
   public static ProductDto from(Product product) {
     return new ProductDto(
         product.getName(),
         product.getDescription(),
-        product.getQuantity()
+        product.getQuantity(),
+        product.getPrice(),
+        product.getImagePath()
     );
+  }
+
+  public static ProductDto createTestProductDto() {
+    return new ProductDto("test Dto", "test description", 200, 30000, "/images/test.png");
+  }
+  public static ProductDto createTestProductDto(Integer quantity) {
+    return new ProductDto("test Dto", "test description", quantity, 30000, "/images/test.png");
   }
 
 
