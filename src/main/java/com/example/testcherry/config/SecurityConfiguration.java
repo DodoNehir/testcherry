@@ -94,25 +94,6 @@ public class SecurityConfiguration {
   SecurityFilterChain securityFilterChain(HttpSecurity http,
       CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
 
-    http.csrf(CsrfConfigurer::disable);
-    http.httpBasic(AbstractHttpConfigurer::disable);
-
-    http.formLogin(form -> form
-        .loginPage("/login") // 인증되지 않은 사용자가 보호된 리소스로 접근할 때 /login 으로 리디렉션
-        .loginProcessingUrl("/login") // 로그인 폼 제출 요청을 처리하는 URL.
-        // 여기서는 UsernamePasswordAuthenticationFilter 가 처리한다.
-        .successHandler(new CustomAuthenticationSuccessHandler(jwtUtil, refreshReposiotry))
-        .failureUrl("/login?error"));
-
-    http.logout(LogoutConfigurer::disable);
-
-    http.sessionManagement(
-        (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-    // cors
-    http.cors(Customizer.withDefaults());
-
-    // domain
     http.authorizeHttpRequests(
         (requests) -> requests
             .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
@@ -161,6 +142,22 @@ public class SecurityConfiguration {
         httpSecurityExceptionHandlingConfigurer
             .accessDeniedHandler(customAccessDeniedHandler)
             .authenticationEntryPoint(customAuthenticationEntryPoint));
+
+    http.csrf(CsrfConfigurer::disable);
+    http.cors(Customizer.withDefaults());
+    http.httpBasic(AbstractHttpConfigurer::disable);
+
+    http.formLogin(form -> form
+        .loginPage("/login") // 인증되지 않은 사용자가 보호된 리소스로 접근할 때 /login 으로 리디렉션
+        .loginProcessingUrl("/login") // 로그인 폼 제출 요청을 처리하는 URL.
+        // 여기서는 UsernamePasswordAuthenticationFilter 가 처리한다.
+        .successHandler(new CustomAuthenticationSuccessHandler(jwtUtil, refreshReposiotry))
+        .failureUrl("/login?error"));
+
+    http.logout(LogoutConfigurer::disable);
+
+    http.sessionManagement(
+        (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
     return http.build();
   }

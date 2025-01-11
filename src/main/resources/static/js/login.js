@@ -1,3 +1,5 @@
+import { sendRequest } from "./request.js";
+
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.querySelector('#loginForm');
     if (loginForm) {

@@ -1,3 +1,41 @@
+import { sendRequest } from "./request.js";
+
+document.addEventListener('DOMContentLoaded', () => {
+  const accessToken = sessionStorage.getItem('accessToken');
+
+  const beforeLogin = document.getElementById('beforeLogin');
+  const afterLogin = document.getElementById('afterLogin');
+  const logoutLink = document.getElementById('logoutLink');
+
+  if (accessToken) {
+    console.log('accessToken: ', accessToken);
+    if (beforeLogin) beforeLogin.style.display = 'none';
+    if (afterLogin) afterLogin.style.display = 'block';
+    if (logoutLink) {
+      logoutLink.addEventListener('click', (event) => {
+        event.preventDefault();
+
+        sendRequest('/members/logout', 'POST')
+          .then(response => {
+            sessionStorage.removeItem('accessToken');
+            console.log('logout success');
+            window.location.href = '/';
+          })
+          .catch(err => {
+            console.error('logout failed', err.message);
+            alert('로그아웃에 실패했습니다');
+          });
+      })
+    }
+
+  } else {
+    console.log('accessToken 없음');
+    if (beforeLogin) beforeLogin.style.display = 'block';
+    if (afterLogin) afterLogin.style.display = 'none';
+  }
+
+});
+
 let prevScrollPos = window.pageYOffset;
 const navbar = document.getElementById("mainNavBar");
 
