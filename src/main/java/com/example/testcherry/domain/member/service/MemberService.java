@@ -7,7 +7,7 @@ import com.example.testcherry.domain.member.dto.MemberDeleteRequest;
 import com.example.testcherry.domain.member.dto.MemberDto;
 import com.example.testcherry.domain.member.entity.Member;
 import com.example.testcherry.domain.member.repository.MemberRepository;
-import com.example.testcherry.domain.refresh.repository.RefreshReposiotry;
+import com.example.testcherry.domain.refresh.repository.RefreshRepository;
 import com.example.testcherry.exception.ForbiddenException;
 import com.example.testcherry.exception.MemberAlreadyExistsException;
 import com.example.testcherry.exception.MemberNotFoundException;
@@ -18,7 +18,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Transactional
 @Service
 public class MemberService {
 
@@ -26,15 +28,15 @@ public class MemberService {
   private final MemberRepository memberRepository;
   private final BCryptPasswordEncoder bCryptPasswordEncoder;
   private final JwtUtil jwtUtil;
-  private final RefreshReposiotry refreshReposiotry;
+  private final RefreshRepository refreshRepository;
 
   public MemberService(MemberRepository memberRepository,
       BCryptPasswordEncoder bCryptPasswordEncoder, JwtUtil jwtUtil,
-      RefreshReposiotry refreshReposiotry) {
+      RefreshRepository refreshRepository) {
     this.memberRepository = memberRepository;
     this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     this.jwtUtil = jwtUtil;
-    this.refreshReposiotry = refreshReposiotry;
+    this.refreshRepository = refreshRepository;
   }
 
 
@@ -103,7 +105,7 @@ public class MemberService {
 
   public void logout(String username, HttpServletResponse response) {
     // delete refreshToken from DB
-    refreshReposiotry.deleteByUsername(username);
+    refreshRepository.deleteByUsername(username);
 
     // set refresh cookie null
     Cookie cookie = new Cookie("refresh", null);

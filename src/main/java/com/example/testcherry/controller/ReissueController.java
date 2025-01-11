@@ -1,6 +1,6 @@
 package com.example.testcherry.controller;
 
-import com.example.testcherry.domain.refresh.repository.RefreshReposiotry;
+import com.example.testcherry.domain.refresh.repository.RefreshRepository;
 import com.example.testcherry.domain.refresh.service.ReissueService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ReissueController {
 
   private final ReissueService reissueService;
-  private final RefreshReposiotry refreshReposiotry;
+//  private final RefreshRepository refreshRepository;
 
   @PostMapping("/reissue")
   public void reissue(HttpServletRequest request, HttpServletResponse response)

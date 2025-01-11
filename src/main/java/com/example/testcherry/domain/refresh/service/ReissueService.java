@@ -3,7 +3,7 @@ package com.example.testcherry.domain.refresh.service;
 import com.example.testcherry.auth.jwt.exception.InvalidJwtException;
 import com.example.testcherry.auth.jwt.util.JwtUtil;
 import com.example.testcherry.domain.refresh.entity.Refresh;
-import com.example.testcherry.domain.refresh.repository.RefreshReposiotry;
+import com.example.testcherry.domain.refresh.repository.RefreshRepository;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReissueService {
 
   private final JwtUtil jwtUtil;
-  private final RefreshReposiotry refreshReposiotry;
+  private final RefreshRepository refreshREpository;
 
   public void reissueAccessToken(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
@@ -51,7 +51,7 @@ public class ReissueService {
     }
 
     // 저장되어 있는 refresh 확인
-    boolean exists = refreshReposiotry.existsByRefreshToken(refreshToken);
+    boolean exists = refreshREpository.existsByRefreshToken(refreshToken);
     if (!exists) {
       throw new InvalidJwtException("refresh");
     }
@@ -64,7 +64,7 @@ public class ReissueService {
     String newRefreshToken = jwtUtil.generateToken("refresh", username, role, 24 * 60 * 60 * 1000L);
 
     // 기존 refresh 토큰 삭제 & 새로운 refresh 토큰 추가
-    refreshReposiotry.deleteByUsername(username);
+    refreshREpository.deleteByUsername(username);
     saveRefreshEntity(username, newRefreshToken, 24 * 60 * 60 * 1000L);
 
     String userAgent = request.getHeader("User-Agent");
@@ -80,6 +80,6 @@ public class ReissueService {
     refreshEntity.setRefreshToken(refresh);
     refreshEntity.setExpiration(String.valueOf(date));
 
-    refreshReposiotry.save(refreshEntity);
+    refreshREpository.save(refreshEntity);
   }
 }

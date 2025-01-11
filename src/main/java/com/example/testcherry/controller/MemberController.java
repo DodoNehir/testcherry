@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberController {
 
   private final MemberService memberService;
+  private final Logger logger = LoggerFactory.getLogger(MemberController.class);
 
   public MemberController(MemberService memberService) {
     this.memberService = memberService;
@@ -43,6 +46,7 @@ public class MemberController {
   @Operation(summary = "로그아웃")
   @PostMapping("/logout")
   public Response<String> logout(Authentication authentication, HttpServletResponse response) {
+    logger.info("try logout username: " + authentication.getName());
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
     memberService.logout(userDetails.getUsername(), response);
     return Response.success("logout successful");

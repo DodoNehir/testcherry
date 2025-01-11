@@ -6,10 +6,9 @@ import com.example.testcherry.auth.handler.CustomAuthenticationSuccessHandler;
 import com.example.testcherry.auth.jwt.filter.JwtAuthenticationFilter;
 import com.example.testcherry.auth.jwt.filter.JwtExceptionFilter;
 import com.example.testcherry.auth.jwt.util.JwtUtil;
-import com.example.testcherry.domain.refresh.repository.RefreshReposiotry;
+import com.example.testcherry.domain.refresh.repository.RefreshRepository;
 import java.util.List;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -29,7 +28,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -39,7 +37,7 @@ public class SecurityConfiguration {
   private final JwtExceptionFilter jwtExceptionFilter;
   private final AuthenticationConfiguration authenticationConfiguration;
   private final JwtUtil jwtUtil;
-  private final RefreshReposiotry refreshReposiotry;
+  private final RefreshRepository refreshRepository;
   private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
   public SecurityConfiguration(
@@ -47,13 +45,13 @@ public class SecurityConfiguration {
       JwtExceptionFilter jwtExceptionFilter,
       AuthenticationConfiguration authenticationConfiguration,
       JwtUtil jwtUtil,
-      RefreshReposiotry refreshReposiotry,
+      RefreshRepository refreshRepository,
       CustomAccessDeniedHandler customAccessDeniedHandler) {
     this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     this.jwtExceptionFilter = jwtExceptionFilter;
     this.authenticationConfiguration = authenticationConfiguration;
     this.jwtUtil = jwtUtil;
-    this.refreshReposiotry = refreshReposiotry;
+    this.refreshRepository = refreshRepository;
     this.customAccessDeniedHandler = customAccessDeniedHandler;
   }
 
@@ -151,7 +149,7 @@ public class SecurityConfiguration {
         .loginPage("/login") // 인증되지 않은 사용자가 보호된 리소스로 접근할 때 /login 으로 리디렉션
         .loginProcessingUrl("/login") // 로그인 폼 제출 요청을 처리하는 URL.
         // 여기서는 UsernamePasswordAuthenticationFilter 가 처리한다.
-        .successHandler(new CustomAuthenticationSuccessHandler(jwtUtil, refreshReposiotry))
+        .successHandler(new CustomAuthenticationSuccessHandler(jwtUtil, refreshRepository))
         .failureUrl("/login?error"));
 
     http.logout(LogoutConfigurer::disable);

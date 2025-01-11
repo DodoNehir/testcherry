@@ -3,7 +3,7 @@ package com.example.testcherry.auth.handler;
 import com.example.testcherry.auth.jwt.util.JwtUtil;
 import com.example.testcherry.domain.member.UserDetailsImpl;
 import com.example.testcherry.domain.refresh.entity.Refresh;
-import com.example.testcherry.domain.refresh.repository.RefreshReposiotry;
+import com.example.testcherry.domain.refresh.repository.RefreshRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,13 +18,13 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
   private final JwtUtil jwtUtil;
-  private final RefreshReposiotry refreshReposiotry;
+  private final RefreshRepository refreshRepository;
   private final Long accessTokenExpiresIn = 60 * 60 * 1000L;
   private final Long refreshExpireTime = 24 * 60 * 60 * 1000L;
 
-  public CustomAuthenticationSuccessHandler(JwtUtil jwtUtil, RefreshReposiotry refreshReposiotry) {
+  public CustomAuthenticationSuccessHandler(JwtUtil jwtUtil, RefreshRepository refreshRepository) {
     this.jwtUtil = jwtUtil;
-    this.refreshReposiotry = refreshReposiotry;
+    this.refreshRepository = refreshRepository;
   }
 
   @Override
@@ -65,6 +65,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     refreshEntity.setRefreshToken(refresh);
     refreshEntity.setExpiration(String.valueOf(date));
 
-    refreshReposiotry.save(refreshEntity);
+    refreshRepository.save(refreshEntity);
   }
 }
