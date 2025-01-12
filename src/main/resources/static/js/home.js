@@ -3,13 +3,15 @@ import { sendRequest } from "./request.js";
 document.addEventListener('DOMContentLoaded', () => {
   const accessToken = sessionStorage.getItem('accessToken');
 
-  const beforeLogin = document.getElementById('beforeLogin');
+  const beforeLogin1 = document.getElementById('beforeLogin1');
+  const beforeLogin2 = document.getElementById('beforeLogin2');
   const afterLogin = document.getElementById('afterLogin');
   const logoutLink = document.getElementById('logoutLink');
 
   if (accessToken) {
     console.log('accessToken: ', accessToken);
-    if (beforeLogin) beforeLogin.style.display = 'none';
+    if (beforeLogin1) beforeLogin1.style.display = 'none';
+    if (beforeLogin2) beforeLogin2.style.display = 'none';
     if (afterLogin) afterLogin.style.display = 'block';
     if (logoutLink) {
       logoutLink.addEventListener('click', (event) => {
@@ -30,7 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   } else {
     console.log('accessToken 없음');
-    if (beforeLogin) beforeLogin.style.display = 'block';
+    if (beforeLogin1) beforeLogin1.style.display = 'block';
+    if (beforeLogin2) beforeLogin2.style.display = 'block';
     if (afterLogin) afterLogin.style.display = 'none';
   }
 

@@ -18,7 +18,7 @@ public record ProductDto(
     @NotNull(message = "상품 재고를 입력해주세요")
     Integer quantity,
 
-    @Min(1000)
+    @Min(100)
     @NotNull(message = "상품 가격을 입력해주세요")
     Integer price,
 

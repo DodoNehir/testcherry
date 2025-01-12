@@ -30,19 +30,15 @@
           </li>
         </ul>
         <ul class="navbar-nav ms-auto">
-          <div id="beforeLogin">
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{/members/signup}">회원가입</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" th:href="@{login}">로그인</a>
-            </li>
-          </div>
-          <div id="afterLogin">
-            <li class="nav-item">
-              <a class="nav-link" id="logoutLink" href="#">로그아웃</a>
-            </li>
-          </div>
+          <li class="nav-item" id="beforeLogin1">
+            <a class="nav-link" th:href="@{/members/signup}">회원가입</a>
+          </li>
+          <li class="nav-item" id="beforeLogin2">
+            <a class="nav-link" th:href="@{login}">로그인</a>
+          </li>
+          <li class="nav-item" id="afterLogin">
+            <a class="nav-link" id="logoutLink" href="#">로그아웃</a>
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="#">장바구니</a>
           </li>
@@ -89,11 +85,11 @@
           <img th:src="${product.imagePath}" class="card-img-top" th:alt="${product.name}">
           <div class="card-body">
             <h5 class="card-title" th:text="${product.name}"></h5>
-            <p class="card-text" th:text="${product.price}"></p>
+            <p class="card-text" th:text="${#numbers.formatInteger(product.price,3,'COMMA')} + ' 원'"></p>
           </div>
         </div>
       </div>
-      
+
     </div>
   </div>
 

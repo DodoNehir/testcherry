@@ -1,6 +1,9 @@
-package com.example.testcherry.controller;
+package com.example.testcherry.controller.view;
 
 import com.example.testcherry.domain.member.UserDetailsImpl;
+import com.example.testcherry.domain.product.dto.ProductDto;
+import com.example.testcherry.domain.product.service.ProductService;
+import java.util.List;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -11,8 +14,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class HomeController {
 
+  private final ProductService productService;
+
+  public HomeController(ProductService productService) {
+    this.productService = productService;
+  }
+
   @GetMapping("/")
   public String homeController(Model model) {
+
+    List<ProductDto> productDtoList = productService.findAll();
+    model.addAttribute("products", productDtoList);
+
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
     if (authentication != null && authentication.isAuthenticated()
         && !authentication.getPrincipal().equals("anonymousUser")) {
