@@ -106,6 +106,7 @@ public class SecurityConfiguration {
             .requestMatchers(HttpMethod.GET, "members/signup").permitAll()
             .requestMatchers(HttpMethod.GET, "members/checkId").permitAll()
             .requestMatchers("/login").permitAll()
+            .requestMatchers(HttpMethod.GET, "/search").permitAll()
 
 //            .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
 

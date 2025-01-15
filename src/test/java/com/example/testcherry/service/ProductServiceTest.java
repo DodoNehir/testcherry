@@ -11,6 +11,7 @@ import com.example.testcherry.exception.ProductNotFoundException;
 import com.example.testcherry.domain.product.dto.ProductDto;
 import com.example.testcherry.domain.product.entity.Product;
 import com.example.testcherry.domain.product.repository.ProductRepository;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -71,13 +72,15 @@ class ProductServiceTest {
 
 
   @Test
-  void findProductByName_shouldThrowException_whenAllNotFoundContaining() {
+  void findProductByName_shouldReturnEmptyList_whenNameIsEmpty() {
     // given
-    String name = "name";
+    String name = "";
 
     // when & then
-    assertThrows(
-        ProductNotFoundException.class, () -> productService.findAllByNameContaining(name));
+    List<ProductDto> productDtoList = productService.findAllByNameContaining(name);
+
+    // then
+    assertThat(productDtoList).isEmpty();
   }
 
   @Test

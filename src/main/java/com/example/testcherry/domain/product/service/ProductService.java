@@ -4,7 +4,9 @@ import com.example.testcherry.exception.ProductNotFoundException;
 import com.example.testcherry.domain.product.dto.ProductDto;
 import com.example.testcherry.domain.product.entity.Product;
 import com.example.testcherry.domain.product.repository.ProductRepository;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -38,9 +40,10 @@ public class ProductService {
   }
 
   public List<ProductDto> findAllByNameContaining(String name) {
-    return productRepository.findAllByNameContaining(name)
-        .orElseThrow(() -> new ProductNotFoundException(name))
-        .stream().map(ProductDto::from).toList();
+    Optional<List<Product>> productList = productRepository.findAllByNameContaining(name);
+
+    return productList.map(products -> products.stream().map(ProductDto::from).toList())
+        .orElseGet(ArrayList::new);
   }
 
   public void updateProductById(Long id, ProductDto productDto) {

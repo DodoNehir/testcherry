@@ -53,4 +53,17 @@ public class HomeController {
     return "login";
   }
 
+  @GetMapping("/search")
+  public String search(@RequestParam String keyword, Model model) {
+    model.addAttribute("keyword", keyword);
+    try {
+      List<ProductDto> products = productService.findAllByNameContaining(keyword);
+      model.addAttribute("products", products);
+
+    } catch (Exception e) {
+      model.addAttribute("errorMessage", "검색 중 오류가 발생했습니다: " + e.getMessage());
+    }
+    return "search";
+  }
+
 }
