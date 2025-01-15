@@ -40,6 +40,9 @@ public class ProductService {
   }
 
   public List<ProductDto> findAllByNameContaining(String name) {
+    if (name == null || name.isEmpty()) {
+      return new ArrayList<>();
+    }
     Optional<List<Product>> productList = productRepository.findAllByNameContaining(name);
 
     return productList.map(products -> products.stream().map(ProductDto::from).toList())

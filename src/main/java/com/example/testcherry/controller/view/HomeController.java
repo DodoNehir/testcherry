@@ -54,7 +54,7 @@ public class HomeController {
   }
 
   @GetMapping("/search")
-  public String search(@RequestParam String keyword, Model model) {
+  public String search(@RequestParam(required = false) String keyword, Model model) {
     model.addAttribute("keyword", keyword);
     try {
       List<ProductDto> products = productService.findAllByNameContaining(keyword);
