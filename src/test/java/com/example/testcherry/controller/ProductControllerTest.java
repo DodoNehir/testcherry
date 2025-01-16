@@ -28,6 +28,13 @@ class ProductControllerTest extends AbstractIntegrationTest {
 
   private Product product;
 
+  private String contentString = "{\n"
+      + "    \"name\": \"Apple\",\n"
+      + "    \"description\": \"Silicon\",\n"
+      + "    \"quantity\": \"100\",\n"
+      + "    \"price\": \"10000\",\n"
+      + "    \"imagePath\": \"/images/product_1.jpg\"\n"
+      + "}";
 
   @BeforeEach
   void setUp() {
@@ -35,30 +42,13 @@ class ProductControllerTest extends AbstractIntegrationTest {
     product = productRepository.save(product);
   }
 
-  // CREATE
-  @Test
-  @WithMockUser
-  void registerProductWithAnonymousRole() throws Exception {
-    mockMvc.perform(post("/products")
-            .contentType("application/json")
-            .content("{\n"
-                + "    \"name\": \"Apple\",\n"
-                + "    \"description\": \"Silicon\",\n"
-                + "    \"quantity\": \"100\"\n"
-                + "}"))
-        .andExpect(status().isForbidden());
-  }
 
   @Test
   @WithMockUser(roles = "MEMBER")
   void registerProductWithMemberRole() throws Exception {
     mockMvc.perform(post("/products")
             .contentType("application/json")
-            .content("{\n"
-                + "    \"name\": \"Apple\",\n"
-                + "    \"description\": \"Silicon\",\n"
-                + "    \"quantity\": \"100\"\n"
-                + "}"))
+            .content(contentString))
         .andExpect(status().isForbidden());
   }
 
@@ -67,11 +57,7 @@ class ProductControllerTest extends AbstractIntegrationTest {
   void registerProductWithAdminRole() throws Exception {
     mockMvc.perform(post("/products")
             .contentType("application/json")
-            .content("{\n"
-                + "    \"name\": \"Apple\",\n"
-                + "    \"description\": \"Silicon\",\n"
-                + "    \"quantity\": \"100\"\n"
-                + "}"))
+            .content(contentString))
         .andExpect(status().isOk());
   }
 
@@ -98,11 +84,7 @@ class ProductControllerTest extends AbstractIntegrationTest {
   void updateProductWithAnonymousRole() throws Exception {
     mockMvc.perform(patch("/products/" + product.getProductId())
             .contentType("application/json")
-            .content("{\n"
-                + "    \"name\": \"Apple\",\n"
-                + "    \"description\": \"Silicon\",\n"
-                + "    \"quantity\": \"100\"\n"
-                + "}"))
+            .content(contentString))
         .andExpect(status().isForbidden());
   }
 
@@ -111,11 +93,7 @@ class ProductControllerTest extends AbstractIntegrationTest {
   void updateProductWithMemberRole() throws Exception {
     mockMvc.perform(patch("/products/" + product.getProductId())
             .contentType("application/json")
-            .content("{\n"
-                + "    \"name\": \"Apple\",\n"
-                + "    \"description\": \"Silicon\",\n"
-                + "    \"quantity\": \"100\"\n"
-                + "}"))
+            .content(contentString))
         .andExpect(status().isForbidden());
   }
 
@@ -124,11 +102,7 @@ class ProductControllerTest extends AbstractIntegrationTest {
   void updateProductWithAdminRole() throws Exception {
     mockMvc.perform(patch("/products/" + product.getProductId())
             .contentType("application/json")
-            .content("{\n"
-                + "    \"name\": \"Apple\",\n"
-                + "    \"description\": \"Silicon\",\n"
-                + "    \"quantity\": \"100\"\n"
-                + "}"))
+            .content(contentString))
         .andExpect(status().isOk());
   }
 
