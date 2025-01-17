@@ -1,31 +1,27 @@
-# 쇼핑몰 api 서비스
+# 쇼핑몰 서비스
 
-이 프로젝트는 Spring Boot를 사용하여 간단한 Rest API 를 구현했습니다. 사용자는 상품을 검색하고 주문할 수 있고 관리자는 상품과 주문을 관리할 수 있습니다.
+이 프로젝트는 Spring Boot를 사용하여 간단한 Rest API 및 웹 페이지를 구현했습니다.
 
 ### 기술 스택
 
 * Spring Boot 3
 * Java 17
-* PostgreSQL
+* MySQL 8
 * Gradle
+* HTML, javascript
 
 ### 아키텍처
 
 ```mermaid
 graph TD
-subgraph Docker Network
-    A[Spring Boot Container]
-    B[PostgreSQL Container]
-end
-A --> B
+    subgraph GCE VM Instance
+        C[MySQL]
+        subgraph Docker
+            A[Spring Boot Container]
+        end
+    end
 ```
 
-### 시나리오
-
-* 방문객도 제품을 볼 수 있어요
-* 주문하려면 회원가입이 필요해요
-* 여러 상품을 같이 주문할 수 있어요. 하나의 주문(Order)에 들어간 각 제품은 OrderItem으로 구분해요
-* 재고가 없으면 주문할 수 없어요
 
 ### ERD
 
@@ -41,20 +37,20 @@ A --> B
 
 #### JWT
 웹 브라우저와 모바일에서 동시에 사용할 수 있어요. 추후 클라우드에서 서비스하게 될 것을 생각해서 세션 대신 선택했어요. 
-access 토큰은 1시간, refresh 토큰은 24시간 유효하고 refreshToken은 DB로 관리해요
+refreshToken은 데이터베이스에 저장하고 관리해요
 
 [//]: # (#### 헬스체크 &#40;Spring Actuator 사용&#41;)
 
 [//]: # (1시간마다 정기적으로 확인해서 문제가 생기면 메시지를 전송해요)
 
 #### Validation
-컨트롤러에 전송받는 값의 오류를 줄여 서버의 리소스를 낭비하지 않기 위해 Spring Validation을 사용했어요
+컨트롤러에서 전송받는 값의 오류를 줄여 서버의 리소스를 낭비하지 않기 위해 Spring Validation을 사용했어요
 
 <br>
 <br>
 
 ## 트러블 슈팅
-* 주문 조회 시 OrderItem 데이터 누락 문제
+### 주문 조회 시 OrderItem 데이터 누락 문제
 
 문제 상황: 주문을 조회하면 해당 주문에 포함된 상품 목록(OrderItem)이 비어 있는 상태였어요
 1. 디버깅
@@ -70,27 +66,52 @@ access 토큰은 1시간, refresh 토큰은 24시간 유효하고 refreshToken�
 4. 결과 및 학습
 * 문제를 해결하는 과정에서 양방향 연관 관계가 꼭 필요한지 다시 검토하게 되었어요
 * 양방향 매핑의 주의점을 공부하며 설계는 단순하게 해야 할 필요를 느끼게 됐어요
+<br>
+
+### jdbc url 연결 실패 문제
+문제 상황: MySQL서버는 GCE의 VM 인스턴스에서 실행중이었고 로컬과의 연결은 정상이었지만 다른 클라우드 서비스에서 실행시킨 스프링 컨테이너에서는 MySQL에 연결하지 못 하던 문제가 있었어요
+1. 문제분석
+* 해당 업체의 콘솔을 통한 터미널 사용에 제약이 많았어요 IP주소에 관한 문제가 의심됐지만 확인이 불가하고, 고정 IP도 받을 수 없는 상황이었어요
+2. 해결방안
+* 터미널을 자유롭게 사용할 수 있는 VM 인스턴스에 Docker를 설치해 컨테이너를 실행하기로 했어요
+* 에러 로그를 확인하여 IP 주소가 MySQL 사용자로 등록되지 않아 발생하는 문제임을 확인했어요
+3. 해결방안
+* MySQL 서버에 스프링 컨테이너의 IP로 접근할 수 있는 새로운 user를 만들었어요
+4. 결과 및 학습
+* 디버깅이 어렵거나 사용자가 적은 플랫폼이면 문제 해결도 어렵다는 것을 알게 됐어요
+* MySQL은 사용자와 함께 접속 IP도 고려하여 접속을 제한한다는 것을 알게 됐어요. MySQL 8.0부터는 bind-address를 여러 개로 설정할 수 있지만 mysql.user 테이블로 사용자를 관리하는 것이 더 일반적인 방법임을 알게 됐어요
+
+<br>
+
+
+## 웹 페이지
+http://34.47.120.236:8080/
+
+상품검색, 회원가입, 로그인, 로그아웃 가능
+
+<img width="1496" alt="Image" src="https://github.com/user-attachments/assets/bf4dcee4-c5bd-4dca-b0c0-98aa2d2745d7" />
 
 <br>
 
 ## API 명세
 http://relaxed-daveta-kiraz-787c046b.koyeb.app/swagger-ui/index.html
 
-## 시연 이미지
-### 멤버로 로그인 후 권한이 없는 상품 등록 api에 접근했을 때
+## API 시연 이미지
+### 권한이 없는 api 접근 시
 <img width="727" alt="스크린샷 2024-12-26 오전 2 42 25" src="https://github.com/user-attachments/assets/85a634ea-843f-45cf-882d-c5e11edaab78" />
 
-### 주문을 했을 때
+### 주문 성공
 <img width="727" alt="스크린샷 2024-12-26 오전 2 43 26" src="https://github.com/user-attachments/assets/e1cc3a9a-6b98-4126-879e-bc37ae920dd0" />
 
 <br>
 
 ## 개선 사항
-* 가격 설정
-* 배송 로직
+* 장바구니 페이지
+* 주문 페이지
+* 가격
+* 배송
 * DB 백업
-* 상품 설명 text -> image
-* 소셜 로그인 기능
-* 결제 기능
+* 소셜 로그인
+* 결제
 * 도메인 구입
-* 프론트엔드 서버
+* 프론트엔드
